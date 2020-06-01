@@ -15,3 +15,6 @@ The rollout simulator is build on top of [pygame](https://github.com/pygame/). C
 
 2. Running the simulator
     - `python env/game.py`
+
+
+## Reinforcement Learning Motion Planner
