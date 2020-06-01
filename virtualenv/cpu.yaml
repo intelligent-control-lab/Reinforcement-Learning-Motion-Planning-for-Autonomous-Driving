@@ -1,0 +1,46 @@
+channels:
+- kne  # for pybox2d
+- pytorch
+- anaconda  # foer labr mkl
+- conda-forge # for jupyt
+dependencies:
+- cython
+- ipython
+- lockfile
+- matplotlib
+- python=3.6.8
+- mpi4py==2.0.0
+- nodejs
+- tensorflow==1.12.0
+- scipy==1.0.1
+- jupyterlab==0.35.6
+- ipywidgets==7.4.2
+- pip:
+  - mock
+  - ai2thor==2.3.4
+  - tensorwatch==0.8.5
+  - Pillow==6.2.2
+  - cloudpickle==0.5.2
+  - gym[atari]==0.10.5
+  - gitpython==2.1.7
+  - gtimer==1.0.0b5
+  - pygame
+  - ipdb
+  - ray==0.7.5
+  - psutil
+  - colorlog
+  - tqdm
+  - pandas
+  - tabulate
+  - networkx
+  - pyyaml
+  - opencv-python==3.4.3.18
+  - numpy==1.15.0
+  - torch==1.2.0
+  - torchvision==0.4.0
+  - tensorboardX
+  - google-api-python-client
+  - google-auth-httplib2
+  - google-auth-oauthlib
+  - seaborn
+  - gym-donkeycar
