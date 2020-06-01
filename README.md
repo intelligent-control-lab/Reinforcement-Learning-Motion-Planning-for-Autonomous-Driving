@@ -1,7 +1,10 @@
-### Reinforcement-Learning-Motion-Planning-for-Autonomous-Driving
+# Reinforcement-Learning-Motion-Planning-for-Autonomous-Driving
 by Weiye Zhao, Anthony Liang, Changliu Liu 
 
 The repo contains the implementation for reinforcement learning motion planner to ensure safe driving dehavior on extreme road conditions 
+
+## High-fidelity Rollout Simulator
+The rollout simulator is build on top of [pygame](https://github.com/pygame/). Currenly simple unicycle dynamics model is deployed in simulation. Sensors of autonomous vehicle include ranges sensors, distance to center line, and etc. High-fidelity approximation of real world simulation will be added for future implentation.
 
 ### Screenshot of car simulation environment
 
