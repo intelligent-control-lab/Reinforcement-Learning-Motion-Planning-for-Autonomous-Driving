@@ -19,16 +19,31 @@ else
   exit
 fi
 
+echo "Creating conda environment"
 conda create --name ${name} --yes
 source activate ${name}
 
 conda env update --file ${yaml_file}
 
-# Install Pygame learning env
+# Install donkey-env
 
+# # git clone https://github.com/openai/baselines
+# cd baselines
+# git checkout donkey_env
+# # git checkout 5b41c926c7a852df3f0928afdf2429f96a3965cb -b compatible
+# pip install -e .
+# cd ../
+
+echo "Installing PyGame-Learning-Environment"
 git clone https://github.com/ntasfi/PyGame-Learning-Environment.git
 cd PyGame-Learning-Environment/
-pip install -e .
+pip3 install -e .
+
+echo "Installing requirements.txt"
+pip3 install -r requirements.txt
+
+echo "Installing gym environment"
+pip3 install -e gym-ICLcar
 
 echo
 echo
