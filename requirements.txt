@@ -1,9 +1,0 @@
-pygame==2.0.0.dev8
-torchvision
-torch
-matplotlib
-numpy
-pyyaml
-gym
-opencv-python
-ipdb

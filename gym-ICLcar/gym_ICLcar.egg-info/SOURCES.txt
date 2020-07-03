@@ -1,7 +1,0 @@
-README.md
-setup.py
-gym_ICLcar.egg-info/PKG-INFO
-gym_ICLcar.egg-info/SOURCES.txt
-gym_ICLcar.egg-info/dependency_links.txt
-gym_ICLcar.egg-info/requires.txt
-gym_ICLcar.egg-info/top_level.txt
