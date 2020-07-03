@@ -27,8 +27,11 @@ The rollout simulator is build on top of [pygame](https://github.com/pygame/). C
 
 6. Train DDPG agent with SpinningUp implementation.
     - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml`
+    
+7. Train agetn with customizable parameter setting. Additional setting files should be appended to the end of command line.
+    - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/exp_settings.yaml`
 
-7. View logs on tensorboard (make sure you first ssh with port forwarding)
+8. View logs on tensorboard (make sure you first ssh with port forwarding)
     - `tensorboard --logdir={log_dir} --port {server_port} --host localhost`
 
 ### Testing Rllab and Spinup implementations of DDPG
