@@ -41,7 +41,8 @@ if __name__ == '__main__':
       num_future_info=args['num_future_info'],
       reward_func_kwargs = dict(
         rotation_penalty_weight=args['rotation_penalty_weight'],
-        distance_penalty_weight=args['distance_penalty_weight']
+        distance_penalty_weight=args['distance_penalty_weight'],
+        angle_penalty_weight=args['angle_penalty_weight']
       ),
       video_kwargs=dict(
         save_frames=args['save_frames'],

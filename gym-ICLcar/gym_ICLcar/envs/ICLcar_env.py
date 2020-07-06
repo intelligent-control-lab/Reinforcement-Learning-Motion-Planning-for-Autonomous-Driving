@@ -89,7 +89,9 @@ class ICLcarEnv(gym.Env, base.PyGameWrapper):
         pose = self.car.pose[:2]
         pose = [int(ele) for ele in pose]
 
-        if not self.car.img_mask: return
+        if not self.car.img_mask: 
+            print('dont update')
+            return
 
         # Set rotational and translational coefficients of vehicle
         for texture, dic in self.road.texture_map.items():
@@ -101,7 +103,7 @@ class ICLcarEnv(gym.Env, base.PyGameWrapper):
             #     break
             # else:
             #     self.car.set_friction(1, 1)
-            self.car.set_friction(1,10)
+            self.car.set_friction(1,1)
 
     def world2screen(self, world_x, world_y):
         screen_x = (world_x - self.world_offset_x) * self.zoom

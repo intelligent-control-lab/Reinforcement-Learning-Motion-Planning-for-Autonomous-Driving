@@ -11,6 +11,7 @@ import pygame as pg
 from .objects import Sensors, Info
 from .env_configs import *
 from src.utils import *
+import ipdb
 
 def make_wrapped_env(
   env_id,
@@ -73,7 +74,7 @@ class SensorWrapper(EnvWrapperBase):
   def define_spaces(self):
     if 'center_lane' in self.state_sources:
       self.env.observation_space.spaces['dist_to_center_lane'] = spaces.Box(low=0, high=100, shape=(1,))
-      self.env.observation_space.spaces['closest_center_lane_pose'] = spaces.Box(low=0, high=100, shape=(2,))
+      self.env.observation_space.spaces['closest_center_lane_pose'] = spaces.Box(low=-100, high=100, shape=(2,))
 
     if 'lane_curvature' in self.state_sources:
       self.env.observation_space.spaces['lane_curvature'] = spaces.Box(low=0, high=100, shape=(1,))
@@ -85,10 +86,9 @@ class SensorWrapper(EnvWrapperBase):
         self.env.observation_space.spaces[f'range_{i}'] = spaces.Box(low=0, high=100, shape=(1,))
 
     if 'lane_direction' in self.state_sources:
-      self.env.observation_space.spaces['lane_direction'] = spaces.Box(low=0, high=360, shape=(1,))
-      self.env.observation_space.spaces['angle_diff'] = spaces.Box(low=0, high=math.pi, shape=(1,))
+      self.env.observation_space.spaces['angle_diff'] = spaces.Box(low=-math.pi, high=math.pi, shape=(1,))
       if self.num_future_info > 0:
-        self.env.observation_space.spaces['future_lane_direction'] = spaces.Box(low=0, high=360, shape=(self.num_future_info,))
+        self.env.observation_space.spaces['future_lane_direction'] = spaces.Box(low=-math.pi, high=math.pi, shape=(self.num_future_info,))
 
   def add_sensor_to_obs(self, obs):
     for i, sensor in enumerate(self.sensors.range_sensors):
@@ -102,10 +102,9 @@ class SensorWrapper(EnvWrapperBase):
       obs['lane_curvature'] = self.sensors.lane_curvature_sensor.measurement
 
     if 'lane_direction' in self.state_sources:
-      obs['lane_direction'] = self.sensors.lane_direction_sensor.measurement[0]
-      obs['angle_diff'] = self.sensors.lane_direction_sensor.measurement[1]
+      obs['angle_diff'] = self.sensors.lane_direction_sensor.measurement[0]
       if self.num_future_info > 0:
-        obs['future_lane_direction'] = self.sensors.lane_direction_sensor.measurement[2:]
+        obs['future_lane_direction'] = self.sensors.lane_direction_sensor.measurement[1:]
 
     return obs
 
@@ -177,7 +176,7 @@ class RewardWrapper(EnvWrapperBase):
    # Car goes out of map
     if self.out_of_bound_check():
       done = True
-      step_reward = -2
+      step_reward = -10
     else:
       angle_diff = info['angle_diff']
       dist_to_center = info['closest_dist']
@@ -188,27 +187,35 @@ class RewardWrapper(EnvWrapperBase):
       velocity_rew = self.car.v * math.cos(angle_diff) # enforces that the car should go in the correct direction
 
       # range for penalty: 0 -> 0.5
+      diff_angle_penalty = 0
+      if angle_diff < 0.5:
+        diff_angle_penalty = -0.5
+      if angle_diff > 0.5:
+        diff_angle_penalty = np.exp(self.reward_func_kwargs['angle_penalty_weight']*abs(angle_diff)) - 1
+
+      # Penality for not following the heading angle 
+
 
       # Penalty for being far way from center of lane
       # max: inf, min: 0
       dist_to_center_penalty = 0
       if dist_to_center > 30:
         dist_to_center_penalty = np.exp(self.reward_func_kwargs['distance_penalty_weight']*abs(dist_to_center)) - 1
-      if dist_to_center_penalty > 1: dist_to_center_penalty = 1
+      if dist_to_center_penalty > 4: dist_to_center_penalty = 4
 
       # Penalty for high angular velocity
       # max: 50, min: 0
       angular_vel_penalty = 0
       if abs(angular_vel) > 3:
         angular_vel_penalty = np.exp(self.reward_func_kwargs['rotation_penalty_weight']*abs(angular_vel)) - 1
-      if angular_vel_penalty > 1: angular_vel_penalty = 1
+      if angular_vel_penalty > 2: angular_vel_penalty = 2
 
       # Penalty for not moving
-      stationary_penalty = 0.1
+      stationary_penalty = 1
 
-      step_reward = velocity_rew/50 - angular_vel_penalty - dist_to_center_penalty - stationary_penalty
+      step_reward = velocity_rew/10 - angular_vel_penalty - dist_to_center_penalty - stationary_penalty - diff_angle_penalty
 
-      # print(f"vlon: {velocity_rew/100}, dist: {dist_to_center_penalty}, ang: {angular_vel_penalty}")
+      # print(f"vlon: {velocity_rew/100}, dist: {dist_to_center_penalty}, ang_vel: {angular_vel_penalty}, ang_diff: {diff_angle_penalty}")
 
     self.update_reward(step_reward)
     return step_reward, done

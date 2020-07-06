@@ -27,7 +27,7 @@ TRACK_FILE = "assets/track_template.bmp"
 CAR_FILE = "assets/car.bmp"
 CENTER_LANE_FILE = "assets/center_lane.bmp"
 
-LATERAL_FORCE  = 20
+LATERAL_FORCE  = 50
 FORWARD_FORCE = 100
 
 START_X = 740

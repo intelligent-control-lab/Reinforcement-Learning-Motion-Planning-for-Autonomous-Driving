@@ -30,7 +30,7 @@ class Car(pygame.sprite.Sprite):
         self.M = 1                  # mass of unicycle
         self.J = 1                  # inertia moment
         self.Bv = 1                 # translational friction coefficient
-        self.Bw = 1                 # rotational friction coefficient
+        self.Bw = 25                 # rotational friction coefficient
 
         pygame.sprite.Sprite.__init__(self)
 
@@ -185,9 +185,11 @@ class Sensor(object):
 # Sensor for computing distance from car to center of lane
 # ==============================================
 class CenterLaneSensor(Sensor):
-    def __init__(self, _id, car, road):
+    def __init__(self, _id, car, road, oriented_curve):
         super(CenterLaneSensor, self).__init__(car, road)
         self.name = 'CenterLaneSensor' + str(_id)
+        self.oriented_curve = oriented_curve
+        self.win = 5
         self.measure()
 
     def measure(self):
@@ -198,17 +200,83 @@ class CenterLaneSensor(Sensor):
         distances = sp.distance.cdist(car_center, coords)
         point = coords[distances.argmin()]
         dist = distances.min()
+        import copy
+        dist_unsign = copy.deepcopy(dist)
 
         screen_point = to_screen_coords(point)
-        self.closest_point = screen_point
         self.visual_closest_point = point
 
+        # compute the relative pos of car wrt. lane 
+        # determine the car relative pos 
+        cross_screen_coord = self.measure_car_relativepos_lane()
+        if cross_screen_coord > 0: # car on the left lane 
+            dist *= -1
+
+        # compute the coords of cloest point in car frame 
+        # compute the angle difference first wrt. car heading direction 
+        angle_diff_unsign, cross_car_coord = self.measure_angle_diff_unsign()
+        # compute the x and y pos in car frame 
+        if cross_car_coord > 0: # center in left of car  
+            ypos = dist_unsign*math.cos(angle_diff_unsign)
+            xpos = -1*dist_unsign*math.sin(angle_diff_unsign)
+        else: # center in the right of car 
+            ypos = dist_unsign*math.cos(angle_diff_unsign)
+            xpos = dist_unsign*math.sin(angle_diff_unsign)
+        center_pos_car_coord = [xpos, ypos]
+
         # closest distance
-        self.measurement = [dist, *screen_point]
-        return screen_point, dist
+        self.closest_point = center_pos_car_coord
+        self.measurement = [dist, *center_pos_car_coord]
+        return center_pos_car_coord, dist
+
+
+    def measure_car_relativepos_lane(self):
+        # find closest point on oriented curve 
+        car_center = np.array(self.car.center)[np.newaxis, :]
+        distances = sp.distance.cdist(car_center, self.oriented_curve).squeeze(0)
+        indx = distances.argmin()
+        # get closest point coordinates
+        p1 = self.oriented_curve[wrap(self.oriented_curve, indx, -self.win)]
+        p2 = self.oriented_curve[wrap(self.oriented_curve, indx, self.win)]
+        # to world coordinates
+        pos1 = to_screen_coords(p1)
+        pos2 = to_screen_coords(p2)
+        # road vec and center2car vec
+        center2car = to_screen_coords(car_center.squeeze()) - to_screen_coords(self.oriented_curve[indx])
+        road_vec = pos2 - pos1
+        # compute cross product of road vec and center2car vec 
+        cross = road_vec[0]*center2car[1] - center2car[0]*road_vec[1]
+        # cross > 0: car is on left, cross < 0: car is on right 
+        return cross
+
+    def measure_angle_diff_unsign(self):
+
+        # cloest center of lane lane direction vector 
+        car_center = np.array(self.car.center)[np.newaxis, :]
+        distances = sp.distance.cdist(car_center, self.oriented_curve).squeeze(0)
+        indx = distances.argmin()
+
+        # car to lane center vector
+        car2center = to_screen_coords(self.oriented_curve[indx]) - to_screen_coords(car_center.squeeze())
+
+        # car vector 
+        car_theta_rads = self.car.theta
+        car_vec = np.array([math.cos(car_theta_rads), math.sin(car_theta_rads)])
+
+        # compute angle between two vectors
+        u1 = car_vec / np.linalg.norm(car_vec)
+        u2 = car2center / np.linalg.norm(car2center)
+        angle_diff = np.arccos(np.dot(u2, u1)) # in radians
+
+        # compute left/right of center point in car frame 
+        # cross < 0: center in right, corss > 0: center in left
+        cross = u1[0]*u2[1] - u1[1]*u2[0]
+
+        return angle_diff, cross
 
     @property
-    def text(self): return f"P: {self.closest_point}, D: {round(self.measurement[0], 3)}"
+    def text(self): return f"P: {self.closest_point[0]:.2f} {self.closest_point[1]:.2f}, D: {round(self.measurement[0], 3)}"
+    
 
     def blit(self, screen):
         pygame.draw.circle(screen, BLUE, tuple(self.visual_closest_point), 10)
@@ -224,13 +292,20 @@ class LaneDirectionSensor(Sensor):
         self.oriented_curve = oriented_curve
         self.num_future_info = num_future_info
         self.win = 5
+        self.relative_pos = 1 # relative position from car to road, 1 for right of lane, -1 for left 
         self.measure()
 
     def measure(self):
-        lane_dir, indx = self.measure_lane_direction()
+        lane_dir, indx, cross = self.measure_lane_direction()
+        # update the relative position between car and lane 
+        if cross > 0:
+            self.relative_pos = -1 # car on left indicator
+        else:
+            self.relative_pos = 1 # car on right indicator 
+
         angle_diff = self.measure_angle_diff()
 
-        self.measurement = [lane_dir, angle_diff]
+        self.measurement = [angle_diff]
 
         if self.num_future_info > 0:
             self.measurement.extend(self.add_future_info(indx))
@@ -253,18 +328,12 @@ class LaneDirectionSensor(Sensor):
         pos2 = to_screen_coords(p2)
         road_dir_angle = vec2angle(pos2 - pos1)
 
-        car2center_point = to_screen_coords(car_center.squeeze()) - to_screen_coords(self.oriented_curve[indx])
-        car_theta_rads = self.car.theta
-        car_vec = np.array([math.cos(car_theta_rads), math.sin(car_theta_rads)])
+        center2car = to_screen_coords(car_center.squeeze()) - to_screen_coords(self.oriented_curve[indx])
+        road_vec = pos2 - pos1
+        # compute cross product of road vec and center2car vec 
+        cross = road_vec[0]*center2car[1] - center2car[0]*road_vec[1]
 
-        dot = car_vec[0]*-car2center_point[1] + car_vec[1]*car2center_point[0]
-
-        # dot > 0 => center is on the right
-        # left is negative, right is positive
-        if dot < 0:
-            road_dir_angle *= -1
-
-        return road_dir_angle, indx
+        return road_dir_angle, indx, cross
 
     def measure_angle_diff(self):
         car_theta_rads = self.car.theta
@@ -275,24 +344,43 @@ class LaneDirectionSensor(Sensor):
         p1[1] = SCREEN_HEIGHT - p1[1]
         road_vec = np.array(p2 - p1)
 
-        # compute angle between two vectors
+        # compute angle difference between two vectors
         u1 = car_vec / np.linalg.norm(car_vec)
         u2 = road_vec / np.linalg.norm(road_vec)
         angle_diff = np.arccos(np.dot(u1, u2)) # in radians
 
+        # compute the signed angle difference 
+        cross = u1[0]*u2[1] - u1[1]*u2[0] # u1 cross u2
+        if cross < 0:
+            angle_diff *= -1
+
         return angle_diff
 
     def add_future_info(self, indx):
-        future_dir_angle = []
+        future_dir_angle = [] # in car frame
 
+        # car vector 
+        car_theta_rads = self.car.theta
+        car_vec = np.array([math.cos(car_theta_rads), math.sin(car_theta_rads)])
+        # car vector normal direction vector 
+        u1 = car_vec / np.linalg.norm(car_vec)
         # Append the future lane curvature information
         for i in range(self.num_future_info):
             p1 = self.oriented_curve[wrap(self.oriented_curve, indx+i+1, -self.win)]
             p2 = self.oriented_curve[wrap(self.oriented_curve, indx+i+1, self.win)]
             pos1 = to_screen_coords(p1)
             pos2 = to_screen_coords(p2)
-            road_dir_angle = vec2angle(pos2 - pos1)
-            future_dir_angle.append(road_dir_angle)
+            # road vector 
+            road_vec_tmp = np.array(pos2 - pos1)
+            # compute angle difference between two vectors
+            u2 = road_vec_tmp / np.linalg.norm(road_vec_tmp)
+            angle_diff_tmp = np.arccos(np.dot(u1, u2)) # in radians
+            # compute the signed angle difference 
+            cross = u1[0]*u2[1] - u1[1]*u2[0] # u1 cross u2
+            if cross < 0: # negative means road dir on the right half plane (clockwise)
+                angle_diff_tmp *= -1
+
+            future_dir_angle.append(angle_diff_tmp)
 
         return future_dir_angle
 
@@ -302,10 +390,10 @@ class LaneDirectionSensor(Sensor):
 
     @property
     def text(self):
-        angle, angle_diff = self.measurement[:2]
+        angle_diff = self.measurement[0]
 
-        side = "left" if angle < 0 else "right"
-        return f"road_dir: {angle:.2f}, angle_diff: {angle_diff:.2f}, side: {side}"
+        side = "left" if self.relative_pos < 0 else "right"
+        return f"angle_diff: {angle_diff:.2f}, side: {side}"
 
 
 # ==============================================
@@ -437,6 +525,10 @@ class Sensors:
         self.num_range_sensors = 0
         self.range_sensors = []
         range_sensor = list(filter(lambda x: bool(re.match('range_.*', x)), self.state_sources))
+
+        # compute center of lane sequences
+        oriented_curve = self.contour_tracing()
+
         if range_sensor:
             self.num_range_sensors = int(range_sensor[0].split('_')[-1])
 
@@ -445,7 +537,7 @@ class Sensors:
             self._sensors.extend(self.range_sensors)
 
         if 'center_lane' in self.state_sources:
-            self.center_lane_sensor = CenterLaneSensor(0, self.car, self.road)
+            self.center_lane_sensor = CenterLaneSensor(0, self.car, self.road, oriented_curve)
             self._sensors.append(self.center_lane_sensor)
 
         if 'lane_curvature' in self.state_sources:
@@ -453,7 +545,6 @@ class Sensors:
             self._sensors.append(self.lane_curvature_sensor)
 
         if 'lane_direction' in self.state_sources:
-            oriented_curve = self.contour_tracing()
             self.lane_direction_sensor = LaneDirectionSensor(0, self.car, self.road, oriented_curve, num_future_info)
             self._sensors.append(self.lane_direction_sensor)
 
