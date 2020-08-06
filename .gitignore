@@ -1,0 +1,19 @@
+PyGame-Learning-Environment/
+mount
+gym-donkeycar
+test
+*.pyc
+gym_ICLcar/*.pyc
+misc/
+mount/
+baselines
+gym-ICLcar/gym_ICLcar.egg-info
+src/__pycache__
+tmp/
+# spinningup/
+rlkit
+sftp-config.json
+logs/
+docs/build
+*.pyc
+__pycache__/

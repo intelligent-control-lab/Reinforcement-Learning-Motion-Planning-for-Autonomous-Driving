@@ -38,7 +38,7 @@ hidden_sizes: [400, 300]
 
 # Car environment settings
 state_sources: ['lane_direction', 'center_lane']
-num_future_info: 10
+num_future_info: 0
 crop_size: 200
 channels: 1
 env_mode: 'rgb_array'

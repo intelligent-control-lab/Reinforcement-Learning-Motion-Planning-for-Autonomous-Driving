@@ -2,6 +2,7 @@ import os
 import torch
 import gym
 import yaml
+import pickle
 import spinup
 import torch.nn as nn
 import numpy as np
@@ -46,7 +47,8 @@ def main(args):
 
     reward_func_kwargs = dict(
       rotation_penalty_weight=args['rotation_penalty_weight'],
-      distance_penalty_weight=args['distance_penalty_weight']
+      distance_penalty_weight=args['distance_penalty_weight'],
+      angle_penalty_weight=args['angle_penalty_weight']
     )
 
     env_kwargs = dict(
@@ -123,6 +125,7 @@ def main(args):
   # Algorithm shared arguments
   # ==================================
   shared_kwargs = dict(
+    checkpoint_file=args['checkpoint_file'],
     mode=mode,
     ac_kwargs=ac_kwargs,
     replay_buffer=replay_buffer,
@@ -150,22 +153,34 @@ def main(args):
   # ==================================
   if not args['experiment_grid']:
     if args['algo'] == 'ddpg':
-      spinup.ddpg_pytorch(
-        env_fn,
-        actor_critic=ActorCriticDDPG,
-        pi_lr=args['actor_lr'],
-        q_lr=args['critic_lr'],
-        act_noise=args['noise_stddev'],
-        **shared_kwargs
-      )
+      if args['mode'] == 'train':
+        spinup.ddpg_pytorch(
+          env_fn,
+          actor_critic=ActorCriticDDPG,
+          pi_lr=args['actor_lr'],
+          q_lr=args['critic_lr'],
+          act_noise=args['noise_stddev'],
+          **shared_kwargs
+        )
     elif args['algo'] == 'sac':
-      spinup.sac_pytorch(
-        env_fn,
-        actor_critic=ActorCriticSAC,
-        lr=args['learning_rate'],
-        alpha=args['alpha'],
-        **shared_kwargs
-      )
+      if args['mode'] == 'train':
+        # Save a copy of the argument configs
+        os.makedirs(output_dir, exist_ok=True)
+        pickle.dump(args, open(os.path.join(output_dir, 'experiment_config.pkl'), 'wb'))
+
+        spinup.sac_pytorch(
+          env_fn,
+          actor_critic=ActorCriticSAC,
+          lr=args['learning_rate'],
+          alpha=args['alpha'],
+          **shared_kwargs
+        )
+      else:
+        spinup.sac_pytorch_test(
+          env_fn,
+          actor_critic=ActorCriticSAC,
+          **shared_kwargs
+        )
     else:
       raise NotImplementedError
   else:

@@ -1,0 +1,3 @@
+[submodule "spinningup"]
+	path = spinningup
+	url = https://github.com/aliang8/spinningup

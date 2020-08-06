@@ -16,7 +16,7 @@ def add_experiment_args(parser):
     exp.add_argument('--exp-name', default='test', type=str, help='experiment name')
     exp.add_argument('--num-cpu', default=4, type=int, help='number of cpu for experiment grid')
     exp.add_argument('--use-gpu', default=True, type=bool, help='use gpu')
-    exp.add_argument('-es', '--experiment-settings', default="exp_settings/settings.yaml", type=str, nargs='+', help='experiment settings yaml file')
+    exp.add_argument('-es', '--experiment-settings', default=["exp_settings/default_settings.yaml"], type=str, nargs='+', help='experiment settings yaml file')
     exp.add_argument('-eg', '--experiment-grid', default="", type=str, help='experiment grid yaml file')
 
     return parser
@@ -29,6 +29,8 @@ def add_logging_args(parser):
     log.add_argument('--log-dir', default='logs/', type=str, help='folder to store log files')
     log.add_argument('--save-frames', default=True, type=bool, help='save video frames')
     log.add_argument('--video-save-frequency', default=5, type=int, help='how many epochs between saving video')
+    log.add_argument('--verbose', default=True, type=bool, help='output logging statements to terminal')
+
 
     return parser
 
@@ -42,8 +44,9 @@ def add_training_args(parser):
     training.add_argument('--buffer-size', default=1000000, type=int, help='replay buffer size')
     training.add_argument('--num-iterations', default=20000, type=int, help='total number of training steps')
     training.add_argument('--max-episode-length', default=200, type=int, help='maximum number of steps per episode')
-    training.add_argument('--verbose', default=False, type=bool, help='debug output')
     training.add_argument('--noise-stddev', default=0.2, type=float, help='standard deviation for ou noise')
+    training.add_argument('--checkpoint-file', default='', type=str, help='file containing model checkpoint')
+
     return parser
 
 def add_encoder_args(parser):
@@ -85,7 +88,8 @@ def add_car_env_args(parser):
 
     # reward function
     env.add_argument('--rotation-penalty-weight', default=0.008, type=float, help='weight for rotation penalty')
-    env.add_argument('--distance-penalty-weight', default=0.004, type=float, help='weight for distance penalty')
+    env.add_argument('--distance-penalty-weight', default=0.012, type=float, help='weight for distance penalty')
+    env.add_argument('--angle-penalty-weight', default=0.5, type=float, help='weight for angle difference penalty')
 
     return parser
 

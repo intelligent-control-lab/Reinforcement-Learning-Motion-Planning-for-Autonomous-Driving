@@ -4,10 +4,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim import Adam
 
-from models import Actor, Critic
-from modules.replay_buffer import ReplayBuffer
-from modules.noise import OrnsteinUhlenbeckActionNoise
-from utils import *
+from src.models import Actor, Critic
+from src.modules.replay_buffer import ReplayBuffer
+from src.modules.noise import OrnsteinUhlenbeckActionNoise
+from src.utils import *
 
 class DDPG(object):
     def __init__(

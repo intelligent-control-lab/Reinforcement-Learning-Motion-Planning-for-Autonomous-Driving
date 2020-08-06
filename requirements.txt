@@ -7,3 +7,5 @@ pyyaml
 gym
 opencv-python
 ipdb
+sphinx-rtd-theme
+recommonmark

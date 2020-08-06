@@ -1,9 +1,19 @@
-exp_name: 'random_test'
+exp_name: 'perfect_test'
 save_frames: True
-epochs: 100
+epochs: 50
 max_episode_length: 1000
-num_future_info: 0
+num_future_info: 15
 video_save_frequency: 2
 rotation_penalty_weight: 0.014
 start_steps: 2000
 algo: 'sac'
+seed: 4
+
+# testing settings
+# mode: 'test'
+# max_episode_length: 5000
+# checkpoint_file: /Users/anthonyliang/Documents/research/rl_self_driving/icl-safe-driving/logs/test_weiye_settings/test_weiye_settings_s3/checkpoints/ckpt_1_-5618.25.pth
+# checkpoint_file: /Users/anthonyliang/Documents/research/rl_self_driving/icl-safe-driving/logs/test_with_out_of_bounds/test_with_out_of_bounds_s1/checkpoints/ckpt_50_425.69.pth
+
+# hide_display: False
+# env_mode: 'data_collection'

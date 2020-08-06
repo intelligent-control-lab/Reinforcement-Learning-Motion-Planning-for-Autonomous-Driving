@@ -9,10 +9,10 @@ from collections import namedtuple
 import ipdb
 
 import torch
-from ddpg import DDPG
-from utils import *
-from modules.replay_buffer import ReplayBuffer, Transition
-from modules.noise import OrnsteinUhlenbeckActionNoise
+from src.ddpg import DDPG
+from src.utils import *
+from src.modules.replay_buffer import ReplayBuffer, Transition
+from src.modules.noise import OrnsteinUhlenbeckActionNoise
 
 
 def train(
