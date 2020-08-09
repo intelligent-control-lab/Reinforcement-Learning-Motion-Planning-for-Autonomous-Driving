@@ -1,0 +1,4 @@
+Introduction
+============
+
+This is a custom 2D car environment for the development and testing of reinforcement learning algorithms in autonomous driving. Our environment is designed for customizability and modularity. We are interested in designing a safe and efficient controller for autonomous motion planning. One unique feature of this environment is that we can change the road conditions both visually and by modifying the friction level. This allows us to test the vehicle under dynamic and extreme road scenarios. Moreover, we leverage the modularity of gym wrappers to augment the vehicle with different oracle sensors. For example, we can equip the egovehicle with sensors for detecting distance to center lane, road curvature, and also range to the edge of the road. We will explore the usage of incorporating ground truth information to see if it will boost the trained agent's performance.

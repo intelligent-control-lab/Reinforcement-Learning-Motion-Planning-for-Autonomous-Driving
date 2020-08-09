@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ICLcar_env &mdash; icl-car  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="utils" href="utils.html" />
+    <link rel="prev" title="ICLcar_env/gym_ICLcar/envs" href="../envs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> icl-car
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API References:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../src.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/configs.html">configs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/models.html">models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/README.html">src/README.md</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/utils.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/ddpg.html">ddpg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/train.html">train</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/external.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src/external</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/external/actor_critic.html">actor_critic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/external/rllab_ddpg.html">rllab_ddpg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/external/spinup_main.html">spinup_main</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/external/tf_logger.html">tf_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/external/replay_buffer.html">replay_buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/external/video_logger.html">video_logger</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../src/modules.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">src/modules</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/modules/noise.html">noise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../src/modules/replay_buffer.html">replay_buffer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../ICLcar_env.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../README.html">ICLcar_env/README.md</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../setup.html">setup</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../gym_ICLcar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env/gym_ICLcar</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../test_car_gym.html">test_car_gym</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../multienv.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env/gym_ICLcar/multienv</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../multienv/car_vec_env.html">car_vec_env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../multienv/shmem_vec_env.html">shmem_vec_env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../multienv/make_env.html">make_env</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="../envs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env/gym_ICLcar/envs</span></code></a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ICLcar_env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html">utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wrappers.html">wrappers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="objects.html">objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="env_configs.html">env_configs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">icl-car</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../ICLcar_env.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env</span></code></a> &raquo;</li>
+        
+          <li><a href="../../gym_ICLcar.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env/gym_ICLcar</span></code></a> &raquo;</li>
+        
+          <li><a href="../envs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ICLcar_env/gym_ICLcar/envs</span></code></a> &raquo;</li>
+        
+      <li>ICLcar_env</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/ICLcar_env/gym_ICLcar/envs/ICLcar_env.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ICLcar_env.gym_ICLcar.envs.ICLcar_env">
+<span id="iclcar-env"></span><h1>ICLcar_env<a class="headerlink" href="#module-ICLcar_env.gym_ICLcar.envs.ICLcar_env" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv">
+<em class="property">class </em><code class="sig-prename descclassname">ICLcar_env.gym_ICLcar.envs.ICLcar_env.</code><code class="sig-name descname">ICLcarEnv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">1280</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">720</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override close in your subclass to perform any necessary cleanup.</p>
+<p>Environments will automatically close() themselves when
+garbage collected or when the program exits.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.render">
+<code class="sig-name descname">render</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'human'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders the environment.</p>
+<p>The set of supported modes varies per environment. (And some
+environments do not support rendering at all.) By convention,
+if mode is:</p>
+<ul class="simple">
+<li><p>human: render to the current display or terminal and
+return nothing. Usually for human consumption.</p></li>
+<li><p>rgb_array: Return an numpy.ndarray with shape (x, y, 3),
+representing RGB values for an x-by-y pixel image, suitable
+for turning into a video.</p></li>
+<li><p>ansi: Return a string (str) or StringIO.StringIO containing a
+terminal-style text representation. The text can include newlines
+and ANSI escape sequences (e.g. for colors).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Make sure that your class’s metadata ‘render.modes’ key includes</dt><dd><p>the list of supported modes. It’s recommended to call super()
+in implementations to use the functionality of this method.</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mode</strong> (<em>str</em>) – the mode to render with</p>
+</dd>
+</dl>
+<p>Example:</p>
+<dl>
+<dt>class MyEnv(Env):</dt><dd><p>metadata = {‘render.modes’: [‘human’, ‘rgb_array’]}</p>
+<dl class="simple">
+<dt>def render(self, mode=’human’):</dt><dd><dl class="simple">
+<dt>if mode == ‘rgb_array’:</dt><dd><p>return np.array(…) # return RGB frame suitable for video</p>
+</dd>
+<dt>elif mode == ‘human’:</dt><dd><p>… # pop up a window and render</p>
+</dd>
+<dt>else:</dt><dd><p>super(MyEnv, self).render(mode=mode) # just raise an exception</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the state of the environment and returns an initial observation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the initial observation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>observation (object)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">action</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'rgb_array'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ICLcar_env.gym_ICLcar.envs.ICLcar_env.ICLcarEnv.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run one timestep of the environment’s dynamics. When end of
+episode is reached, you are responsible for calling <cite>reset()</cite>
+to reset this environment’s state.</p>
+<p>Accepts an action and returns a tuple (observation, reward, done, info).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>action</strong> (<em>object</em>) – an action provided by the agent</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>agent’s observation of the current environment
+reward (float) : amount of reward returned after previous action
+done (bool): whether the episode has ended, in which case further step() calls will return undefined results
+info (dict): contains auxiliary diagnostic information (helpful for debugging, and sometimes learning)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>observation (object)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../envs.html" class="btn btn-neutral float-left" title="ICLcar_env/gym_ICLcar/envs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Anthony Liang and Weiye Zhao
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
