@@ -6,6 +6,7 @@
 
     src/configs
     src/models
+    src/README
     src/utils
     src/ddpg
     src/train
@@ -36,6 +37,7 @@
     Actor
     Critic
 
+
 .. automodule:: src.utils
 .. rubric:: :doc:`src/utils`
 
@@ -49,6 +51,8 @@
     load_experiment_settings
     colorize
     log
+    path_exists
+    mkdir_p
 
 .. automodule:: src.ddpg
 .. rubric:: :doc:`src/ddpg`

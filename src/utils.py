@@ -76,3 +76,26 @@ def colorize(string, color, bold=False, highlight=False):
 def log(msg, color='green'):
     """Print a colorized message to stdout."""
     print(colorize(msg, color, bold=True))
+
+def path_exists(path, verbosity=0):
+  """Checks if the path exists"""
+  if not path: return
+  if not os.path.exists(path):
+    mkdir_p(path)
+
+def mkdir_p(path):
+  """python version of mkdir -p
+  stolen from: https://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
+  """
+  try:
+
+    os.makedirs(path, exist_ok=True)
+    print("Made path '%s'" % path)
+  except OSError as exc:  # Python >2.5
+      print("Error occurred when making %s" % path)
+      print(exc)
+      if exc.errno == errno.EEXIST and os.path.isdir(path):
+        print("error 1")
+      else:
+        print("error 2")
+        raise

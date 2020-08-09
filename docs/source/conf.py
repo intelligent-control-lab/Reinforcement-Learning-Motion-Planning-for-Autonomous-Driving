@@ -12,10 +12,9 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../..'))
+print(sys.path)
 sys.setrecursionlimit(1500)
-
 
 # -- Project information -----------------------------------------------------
 
@@ -30,14 +29,16 @@ author = 'Anthony Liang and Weiye Zhao'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.doctest',
-    'sphinx.ext.mathjax',
-#    'sphinx.ext.viewcode',  # create HTML file of source code and link to it
-    # 'sphinx.ext.linkcode',  # link to github, see linkcode_resolve() below
-    'numpydoc',
-#    'sphinx.ext.napoleon',  # alternative to numpydoc -- looks a bit worse.
+  'sphinx.ext.autodoc',
+  'sphinx.ext.autosummary',
+  'sphinx.ext.doctest',
+  'sphinx.ext.coverage',
+  'sphinx.ext.mathjax',
+  'sphinx.ext.ifconfig',
+  'sphinx.ext.githubpages',
+  'sphinx_markdown_tables',
+  'sphinx.ext.napoleon',
+  'm2r2'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,25 +55,20 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_theme = 'sphinx_rtd_theme'
+source_suffix = ['.rst', '.md']
 
+autodoc_generate = True
 autosummary_generate = True
 
-mathjax_path = ('https://cdn.mathjax.org/mathjax/latest/MathJax.js?'
-                'config=TeX-AMS-MML_HTMLorMML')
+html_theme_options = {
+    "collapse_navigation" : False
+}
 
-
-numpydoc_show_class_members = False
-
-source_suffix = '.rst'
-
-master_doc = 'index'
-
-pygments_style = 'sphinx'
+napoleon_google_docstring = True

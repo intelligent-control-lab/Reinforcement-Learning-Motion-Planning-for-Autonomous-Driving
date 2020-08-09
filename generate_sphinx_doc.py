@@ -205,7 +205,7 @@ if __name__ == '__main__':
   import argparse
   parser = argparse.ArgumentParser(description='Script for generating sphinx doc files')
   parser.add_argument('--dirs', default=['ICLcar_env', 'src'], type=str, nargs='+', help='directory to generate doc files for')
-  parser.add_argument('--doc-base-dir', default='../domain-adaptation-rl-docs/source', type=str, help='base directory for storing documentation files')
+  parser.add_argument('--doc-base-dir', default='docs/source', type=str, help='base directory for storing documentation files')
 
   args, unknown = parser.parse_known_args()
   args = vars(args)

@@ -19,3 +19,7 @@ utils
 
 .. autofunction:: log
 
+.. autofunction:: path_exists
+
+.. autofunction:: mkdir_p
+
