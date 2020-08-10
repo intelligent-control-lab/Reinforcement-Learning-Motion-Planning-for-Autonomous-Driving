@@ -1,0 +1,18 @@
+save_frames: True
+epochs: 50
+max_episode_length: 1000
+num_future_info: 15
+video_save_frequency: 2
+rotation_penalty_weight: 0.014
+start_steps: 2000
+algo: 'sac'
+seed: 5
+use_textures: True
+
+# testing settings
+mode: 'test'
+max_episode_length: 5000
+checkpoint_file: best_ckpt.pth
+
+hide_display: False
+env_mode: 'data_collection'
