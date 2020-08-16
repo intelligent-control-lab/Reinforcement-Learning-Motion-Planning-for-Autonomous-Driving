@@ -13,6 +13,8 @@ from src.external.replay_buffer import DictReplayBuffer
 from src.external.tf_logger import TensorboardLogger
 from src.utils import *
 from spinningup.spinup.utils.run_utils import ExperimentGrid, setup_logger_kwargs
+from ray import tune
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 
 def main(args):
   if args['hide_display']: os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -48,7 +50,8 @@ def main(args):
     reward_func_kwargs = dict(
       rotation_penalty_weight=args['rotation_penalty_weight'],
       distance_penalty_weight=args['distance_penalty_weight'],
-      angle_penalty_weight=args['angle_penalty_weight']
+      angle_penalty_weight=args['angle_penalty_weight'],
+      velocity_reward_weight=args['velocity_reward_weight']
     )
 
     env_kwargs = dict(
@@ -125,7 +128,7 @@ def main(args):
   # Algorithm shared arguments
   # ==================================
   shared_kwargs = dict(
-    checkpoint_file=args['checkpoint_file'],
+    # checkpoint_file=args['checkpoint_file'],
     mode=mode,
     ac_kwargs=ac_kwargs,
     replay_buffer=replay_buffer,
@@ -184,35 +187,60 @@ def main(args):
     else:
       raise NotImplementedError
   else:
-    # ==================================
-    # Experiment Grid
-    # ==================================
     exp_grid = yaml.load(open(args['experiment_grid'], 'r'))
     grid_keys = exp_grid['grid'].keys()
 
-    eg = ExperimentGrid(name=args['exp_name'])
-    del shared_kwargs['logger_kwargs']
+    grid_search = dict()
+    logger_kwargs['output_dir'] = './'
+
     for k, v in shared_kwargs.items():
       if k not in grid_keys:
-        eg.add(k, v)
+        grid_search[k] = v
 
     for k, v in exp_grid['grid'].items():
-      eg.add(k, v)
+      if isinstance(v, list):
+        grid_search[k] = tune.grid_search(v)
 
-    eg.add('env_fn', env_fn)
-    eg.add('actor_critic', actor_critic)
+    grid_search['env_fn'] = env_fn
+    grid_search['actor_critic'] = ActorCriticSAC
 
-    if args['algo'] == 'ddpg':
-      # Add ddpg only arguments
-      if 'pi_lr' not in grid_keys:
-        eg.add('pi_lr', args['actor_lr'])
-      if 'q_lr' not in grid_keys:
-        eg.add('q_lr', args['critic_lr'])
-      if 'act_noise' not in grid_keys:
-        eg.add('act_noise', args['noise_stddev'])
-      eg.run(spinup.ddpg_pytorch, num_cpu=args['num_cpu'], data_dir=args['log_dir'])
-    elif args['algo'] == 'sac':
-      pass
+    analysis = tune.run(
+      spinup.sac_pytorch_wrapper,
+      config=grid_search,
+      resources_per_trial={'cpu': args['num_cpu'], 'gpu': 0.2},
+      local_dir=args['log_dir'],
+      name=args['exp_name']
+    )
+
+    # ==================================
+    # Experiment Grid
+    # ==================================
+    # exp_grid = yaml.load(open(args['experiment_grid'], 'r'))
+    # grid_keys = exp_grid['grid'].keys()
+
+    # eg = ExperimentGrid(name=args['exp_name'])
+    # del shared_kwargs['logger_kwargs']
+    # for k, v in shared_kwargs.items():
+    #   if k not in grid_keys:
+    #     eg.add(k, v)
+
+    # for k, v in exp_grid['grid'].items():
+    #   eg.add(k, v)
+
+    # eg.add('env_fn', env_fn)
+    # eg.add('actor_critic', actor_critic)
+
+    # if args['algo'] == 'ddpg':
+    #   # Add ddpg only arguments
+    #   if 'pi_lr' not in grid_keys:
+    #     eg.add('pi_lr', args['actor_lr'])
+    #   if 'q_lr' not in grid_keys:
+    #     eg.add('q_lr', args['critic_lr'])
+    #   if 'act_noise' not in grid_keys:
+    #     eg.add('act_noise', args['noise_stddev'])
+    #   eg.run(spinup.ddpg_pytorch, num_cpu=args['num_cpu'], data_dir=args['log_dir'])
+    # elif args['algo'] == 'sac':
+    #   pass
 
 if __name__ == "__main__":
   from src.configs import add_experiment_args, add_logging_args, add_training_args, add_rl_agent_args, add_encoder_args, add_car_env_args, add_spinning_up_args

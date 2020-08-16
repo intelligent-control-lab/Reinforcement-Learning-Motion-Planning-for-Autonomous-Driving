@@ -22,8 +22,8 @@ class Car(pygame.sprite.Sprite):
         init_y: int
         fps: int
     """
-    def __init__(self, init_angle, init_x, init_y, fps=60):
-        self.image = pygame.image.load(CAR_FILE)
+    def __init__(self, init_angle, init_x, init_y, car_file, fps=60):
+        self.image = pygame.image.load(car_file)
         self.img = None
         self.img_mask = None
         self.img_rect = None
@@ -683,8 +683,15 @@ class Sensors:
 # Road Class
 # ==============================================
 class Road:
-    def __init__(self, use_textures=False):
-        self.img = pygame.image.load(TRACK_FILE)
+    def __init__(self,
+        road_file,
+        center_lane_file,
+        textures,
+        texture_files,
+        texture_frictions,
+        use_textures=False
+    ):
+        self.img = pygame.image.load(road_file)
         self.img = pygame.transform.smoothscale(self.img, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.field_mask = pygame.mask.from_threshold(self.img, self.img.get_at((0,0)), (2, 2, 2, 255))
         self.img_rect = self.img.get_rect()
@@ -696,22 +703,21 @@ class Road:
         self.use_textures = use_textures
 
         if self.use_textures:
-            for name, info in TEXTURES.items():
-                path, translation_coef = info
-                texture = pygame.image.load(path)
+            for i, file in enumerate(texture_files):
+                texture = pygame.image.load(file)
                 texture = pygame.transform.smoothscale(texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
                 texture_mask = pygame.mask.from_surface(texture)
 
-                self.texture_map[name] = dict(
+                self.texture_map[textures[i]] = dict(
                     texture=texture,
                     mask=texture_mask,
-                    friction_level=translation_coef
+                    friction_level=texture_frictions[i]
                 )
 
         # ==============================================
         # Load center lane
         # ==============================================
-        self.center_lane = pygame.image.load(CENTER_LANE_FILE)
+        self.center_lane = pygame.image.load(center_lane_file)
         self.center_lane_mask = pygame.mask.from_surface(self.center_lane)
 
     def blit(self, screen):

@@ -44,6 +44,9 @@ channels: 1
 env_mode: 'rgb_array'
 hide_display: True
 act_limit: 50
+textures: ['icy', 'rocky']
+texture_files: ['assets/icy.bmp', 'assets/rocky.bmp']
+texture_frictions: [0.01, 3]
 use_textures: False
 
 # Spinning up settings

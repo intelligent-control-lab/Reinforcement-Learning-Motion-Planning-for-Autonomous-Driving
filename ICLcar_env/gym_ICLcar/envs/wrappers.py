@@ -187,42 +187,34 @@ class RewardWrapper(EnvWrapperBase):
     # else:
     angle_diff = info['angle_diff']
     dist_to_center = info['closest_dist']
+
     velocity = self.car.v
     angular_vel = self.car.w
 
-    # range for velocity rew: -1 -> 1
-    velocity_rew = self.car.v * math.cos(angle_diff) # enforces that the car should go in the correct direction
-    if velocity_rew < -40:
-      velocity_rew = -40 # lower bound the reward of opposite direction driving
-
-    # range for penalty: 0 -> 0.5
-    diff_angle_penalty = 0
-    if abs(angle_diff) < 0.3:
-      diff_angle_penalty = -0.5
-    if abs(angle_diff) > 0.3:
-      diff_angle_penalty = np.exp(self.reward_func_kwargs['angle_penalty_weight']*abs(angle_diff)) - 1
-
-    # Penality for not following the heading angle
-
+    # enforces that the car should go in the correct direction
+    min_velocity_rew = -40
+    velocity_rew = self.reward_func_kwargs['velocity_reward_weight'] * self.car.v * math.cos(angle_diff)
+    velocity_rew = max(min_velocity_rew, velocity_rew)
+    step_reward += velocity_rew
 
     # Penalty for being far way from center of lane
-    # max: inf, min: 0
-    dist_to_center_penalty = 0
-    if abs(dist_to_center) > 30:
-      dist_to_center_penalty = np.exp(self.reward_func_kwargs['distance_penalty_weight']*abs(dist_to_center)) - 1
-    if dist_to_center_penalty > 4: dist_to_center_penalty = 4
+    max_dist_to_center_penalty = 4
+    dist_to_center_threshold = 30
+    if abs(dist_to_center) > dist_to_center_threshold:
+      dist_to_center_penalty = (self.reward_func_kwargs['distance_penalty_weight']*(abs(dist_to_center) - dist_to_center_threshold))**2
+      dist_to_center_penalty = min(dist_to_center_penalty, max_dist_to_center_penalty)
+      step_reward -= dist_to_center_penalty
 
     # Penalty for high angular velocity
-    # max: 50, min: 0
-    angular_vel_penalty = 0
-    if abs(angular_vel) > 3:
-      angular_vel_penalty = np.exp(self.reward_func_kwargs['rotation_penalty_weight']*abs(angular_vel)) - 1
-    if angular_vel_penalty > 2: angular_vel_penalty = 2
+    max_angular_vel_penalty = 2
+    angular_vel_threshold = 3
+    if abs(angular_vel) > angular_vel_threshold:
+      angular_vel_penalty = (self.reward_func_kwargs['rotation_penalty_weight']*(abs(angular_vel) - angular_vel_threshold))**2
+      angular_vel_penalty = min(angular_vel_penalty, max_angular_vel_penalty)
+      step_reward -= angular_vel_penalty
 
-    # Penalty for not moving
-    stationary_penalty = 2
-
-    step_reward = velocity_rew/10 - angular_vel_penalty - dist_to_center_penalty - stationary_penalty - diff_angle_penalty
+    stationary_penalty = 0.01
+    step_reward -= stationary_penalty
 
     # print(f"vlon: {velocity_rew/30}, dist: {dist_to_center_penalty}, ang_vel: {angular_vel_penalty}, ang_diff: {diff_angle_penalty}")
 

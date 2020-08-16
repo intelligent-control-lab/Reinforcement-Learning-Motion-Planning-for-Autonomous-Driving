@@ -14,6 +14,8 @@ def add_experiment_args(parser):
     exp.add_argument('--fps', default=60, type=int, help='frequency between control updates in milliseconds')
     exp.add_argument('--render', default=False, type=bool, help='render')
     exp.add_argument('--exp-name', default='test', type=str, help='experiment name')
+    exp.add_argument('--base-dir', default="", type=str, help='base directory running experiment from')
+
     exp.add_argument('--num-cpu', default=4, type=int, help='number of cpu for experiment grid')
     exp.add_argument('--use-gpu', default=True, type=bool, help='use gpu')
     exp.add_argument('-es', '--experiment-settings', default=["exp_settings/default_settings.yaml"], type=str, nargs='+', help='experiment settings yaml file')
@@ -90,6 +92,15 @@ def add_car_env_args(parser):
     env.add_argument('--rotation-penalty-weight', default=0.008, type=float, help='weight for rotation penalty')
     env.add_argument('--distance-penalty-weight', default=0.012, type=float, help='weight for distance penalty')
     env.add_argument('--angle-penalty-weight', default=0.5, type=float, help='weight for angle difference penalty')
+    env.add_argument('--velocity-reward-weight', default=0.01, type=float, help='weight for velocity reward')
+
+    # sprite files
+    env.add_argument('--road-file', default='assets/track_template.bmp', type=str, help='track file')
+    env.add_argument('--car-file', default='assets/car.bmp', type=str, help='car file')
+    env.add_argument('--center-lane-file', default='assets/center_lane.bmp', type=str, help='center lane file')
+    env.add_argument('--textures', default=['icy', 'rocky'], nargs='+', type=str, help='types of road textures')
+    env.add_argument('--texture-files', default=['assets/icy.bmp', 'assets/rocky.bmp'], nargs='+', type=str, help='road texture files')
+    env.add_argument('--texture-frictions', default=[0.01, 3], nargs='+', type=int, help='road texture friction levels')
 
     return parser
 

@@ -18,17 +18,17 @@ BLUE = (0, 0, 255)
 
 ICY = (225, 225, 240) # plus/minus 10
 
-TEXTURES = {
-  'icy': ['assets/icy.bmp', 0.01],
-  'rocky': ['assets/rocky.bmp', 3]
-}
+# TEXTURES = {
+#   'icy': ['assets/icy.bmp', 0.01],
+#   'rocky': ['assets/rocky.bmp', 3]
+# }
 
-TRACK_FILE = "assets/track_template.bmp"
-CAR_FILE = "assets/car.bmp"
-CENTER_LANE_FILE = "assets/center_lane.bmp"
+# TRACK_FILE = "assets/track_template.bmp"
+# CAR_FILE = "assets/car.bmp"
+# CENTER_LANE_FILE = "assets/center_lane.bmp"
 
-LATERAL_FORCE  = 50
-FORWARD_FORCE = 100
+LATERAL_FORCE  = 5
+FORWARD_FORCE = 50
 
 START_X = 740
 START_Y = 240
