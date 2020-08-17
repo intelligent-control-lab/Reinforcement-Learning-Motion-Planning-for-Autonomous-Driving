@@ -10,9 +10,9 @@ seed: 5
 use_textures: True
 
 # testing settings
-mode: 'test'
-max_episode_length: 5000
-checkpoint_file: best_ckpt.pth
+# mode: 'test'
+# max_episode_length: 5000
+# checkpoint_file: best_ckpt.pth
 
-hide_display: False
-env_mode: 'data_collection'
+# hide_display: False
+# env_mode: 'data_collection'

@@ -125,7 +125,7 @@ def main(args):
   # Algorithm shared arguments
   # ==================================
   shared_kwargs = dict(
-    checkpoint_file=args['checkpoint_file'],
+    # checkpoint_file=args['checkpoint_file'],
     mode=mode,
     ac_kwargs=ac_kwargs,
     replay_buffer=replay_buffer,
@@ -163,6 +163,8 @@ def main(args):
           **shared_kwargs
         )
     elif args['algo'] == 'sac':
+      # import ipdb
+      # ipdb.set_trace()
       if args['mode'] == 'train':
         # Save a copy of the argument configs
         os.makedirs(output_dir, exist_ok=True)
