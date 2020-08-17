@@ -40,10 +40,11 @@ if __name__ == '__main__':
       state_sources=args['state_sources'],
       num_future_info=args['num_future_info'],
       reward_func_kwargs = dict(
+        velocity_reward_weight=args['velocity_reward_weight'],
         rotation_penalty_weight=args['rotation_penalty_weight'],
         distance_penalty_weight=args['distance_penalty_weight'],
         angle_penalty_weight=args['angle_penalty_weight'],
-        velocity_reward_weight=args['velocity_reward_weight']
+        stationary_penalty_weight=args['stationary_penalty_weight']
       ),
       video_kwargs=dict(
         save_frames=args['save_frames'],

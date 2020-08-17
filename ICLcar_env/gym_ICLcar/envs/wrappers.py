@@ -103,7 +103,7 @@ class SensorWrapper(EnvWrapperBase):
       obs['dist_to_center_lane'] = self.sensors.center_lane_sensor.measurement[0]
       obs['closest_center_lane_pose'] = self.sensors.center_lane_sensor.measurement[1:3]
       if self.num_future_info > 0:
-        obs['future_center_pos_car_coord'] = self.sensors.center_lane_sensor.measurement[3:]
+        obs['future_center_pos_car_coord'] = self.sensors.center_lane_sensor.measurement[1:]
 
     if 'lane_curvature' in self.state_sources:
       obs['lane_curvature'] = self.sensors.lane_curvature_sensor.measurement
@@ -214,7 +214,7 @@ class RewardWrapper(EnvWrapperBase):
       step_reward -= angular_vel_penalty
 
     stationary_penalty = 0.01
-    step_reward -= stationary_penalty
+    step_reward -= self.reward_func_kwargs['stationary_penalty_weight']*stationary_penalty
 
     # print(f"vlon: {velocity_rew/30}, dist: {dist_to_center_penalty}, ang_vel: {angular_vel_penalty}, ang_diff: {diff_angle_penalty}")
 

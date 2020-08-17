@@ -41,6 +41,8 @@ Clone repo:
 6. Train DDPG agent with SpinningUp implementation.
     - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/exp_settings.yaml`
 
+    - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/exp_settings.yaml -eg exp_settings/exp_grid.yaml`
+
 7. Evaluate on trained checkpoint.
     - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/test_settings.yaml`
 

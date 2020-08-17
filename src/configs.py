@@ -93,13 +93,15 @@ def add_car_env_args(parser):
     env.add_argument('--distance-penalty-weight', default=0.012, type=float, help='weight for distance penalty')
     env.add_argument('--angle-penalty-weight', default=0.5, type=float, help='weight for angle difference penalty')
     env.add_argument('--velocity-reward-weight', default=0.01, type=float, help='weight for velocity reward')
+    env.add_argument('--stationary-penalty-weight', default=1, type=float, help='weight for stationary penalty')
 
     # sprite files
-    env.add_argument('--road-file', default='assets/track_template.bmp', type=str, help='track file')
-    env.add_argument('--car-file', default='assets/car.bmp', type=str, help='car file')
-    env.add_argument('--center-lane-file', default='assets/center_lane.bmp', type=str, help='center lane file')
+    env.add_argument('--track-number', default=1, type=int, help='track file number')
+    env.add_argument('--road-file', default='track_template.bmp', type=str, help='track file')
+    env.add_argument('--car-file', default='car.bmp', type=str, help='car file')
+    env.add_argument('--center-lane-file', default='center_lane.bmp', type=str, help='center lane file')
     env.add_argument('--textures', default=['icy', 'rocky'], nargs='+', type=str, help='types of road textures')
-    env.add_argument('--texture-files', default=['assets/icy.bmp', 'assets/rocky.bmp'], nargs='+', type=str, help='road texture files')
+    env.add_argument('--texture-files', default=['icy.bmp', 'rocky.bmp'], nargs='+', type=str, help='road texture files')
     env.add_argument('--texture-frictions', default=[0.01, 3], nargs='+', type=int, help='road texture friction levels')
 
     return parser

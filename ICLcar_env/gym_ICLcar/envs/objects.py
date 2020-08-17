@@ -260,6 +260,7 @@ class CenterLaneSensor(Sensor):
         future_center_pos_car_coord = self.measure_future_lane_pos(indx)
 
         # measurement
+        # self.measurement=[dist, *future_center_pos_car_coord]
         self.measurement = [dist, *center_pos_car_coord, *future_center_pos_car_coord]
         return center_pos_car_coord, dist
 
