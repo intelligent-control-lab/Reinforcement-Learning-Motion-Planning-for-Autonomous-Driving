@@ -96,6 +96,9 @@ def add_car_env_args(parser):
     env.add_argument('--stationary-penalty-weight', default=1, type=float, help='weight for stationary penalty')
 
     # sprite files
+    env.add_argument('--start-x', default=[740], type=int, nargs='+', help='start x')
+    env.add_argument('--start-y', default=[240], type=int, nargs='+', help='start y')
+
     env.add_argument('--track-number', default=1, type=int, help='track file number')
     env.add_argument('--road-file', default='track_template.bmp', type=str, help='track file')
     env.add_argument('--car-file', default='car.bmp', type=str, help='car file')

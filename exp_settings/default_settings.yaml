@@ -45,6 +45,8 @@ env_mode: 'rgb_array'
 hide_display: True
 act_limit: 50
 track_number: 1
+start_x: [740, 740]
+start_y: [240, 120]
 textures: ['icy', 'rocky']
 texture_files: ['icy.bmp', 'rocky.bmp']
 texture_frictions: [0.01, 3]

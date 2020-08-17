@@ -203,12 +203,12 @@ class ICLcarEnv(gym.Env, base.PyGameWrapper):
     def reset(self):
         self.reward = 0
         self.prev_reward = 0
+        track_num = self.args['track_number']
 
         def abs_path(path):
-            track_num = self.args['track_number']
             return os.path.join(self.args['base_dir'], f'assets/track_{track_num}', path)
 
-        self.car = Car(0, START_X, START_Y, car_file=abs_path(self.args['car_file']), fps=self.args['fps'])
+        self.car = Car(0, self.args['start_x'][track_num-1], self.args['start_y'][track_num-1], car_file=abs_path(self.args['car_file']), fps=self.args['fps'])
         self.road = Road(
             road_file=abs_path(self.args['road_file']),
             center_lane_file=abs_path(self.args['center_lane_file']),
