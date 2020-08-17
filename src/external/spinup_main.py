@@ -27,18 +27,17 @@ def experiment(args):
   # Logger
   # ==================================
   exp_name = args['exp_name']
-
   logger_kwargs = setup_logger_kwargs(exp_name, args['seed'], data_dir=args['log_dir'])
-
-  if args['experiment_grid']:
-    logger_kwargs['output_dir'] = './'
-
   output_dir = logger_kwargs['output_dir']
   dir_exists = os.path.exists(output_dir)
 
   if dir_exists and mode == 'train':
     log(f'Experiment name {exp_name} already used', 'red')
     raise RuntimeError(f'Experiment name {exp_name} already used')
+
+
+  if args['experiment_grid']:
+    logger_kwargs['output_dir'] = './'
 
   # ==================================
   # Environment
