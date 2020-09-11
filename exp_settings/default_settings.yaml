@@ -1,6 +1,6 @@
 # Experiment settings
 mode: 'train'
-environment_id: 'ICLcar-v0'
+environment_id: 'ICLcar-v2'
 seed: 1
 num_envs: 1
 log_frequency: 5
