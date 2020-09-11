@@ -47,6 +47,8 @@ class cpoint():
 
 def auto_track():
 	dist_max = 1500
+	width = 2000
+	height = 1500
 	dist_min = 600
 	dist_interval = dist_max - dist_min
 	cpoint_num = 10
@@ -65,24 +67,35 @@ def auto_track():
 	ylist = []
 	for i in range(cpoint_num):
 		cp = cpoint(info[i,0], info[i,1])
+		# width_point = np.random.rand() * (width-dist_min) + dist_min
+		# height_point = np.random.rand() * (height-dist_min) + dist_min
+		# cp = cpoint(radius[i,0], width_point, height_point)
 		xlist.append(cp.x)
 		ylist.append(cp.y)
 		cpoints.append(cp)
 	center_lane, comp, center = b_curve_fitting(cpoints)
+	center_lane = circle2ellipse(center_lane, width, height, dist_max)
 	# visuliazation for the points
 	plt.clf()
-	# figure = Figure()
-	# canvas = FigureCanvas(figure)
-	# axes = figure.add_subplot(1, 1, 1, axisbg='red')
 	# axes.plot(center_lane[:,0], center_lane[:,1], '-', linewidth=2, markersize=12)
-	# plt.plot(center_lane[:,0], center_lane[:,1], 'go', linewidth=1, markersize=12, color='gray')
-	plt.scatter(center_lane[::4,0], center_lane[::4,1], s=2)
-	# plt.plot(comp[:,0], comp[:,1], '-', linewidth=2, markersize=12, alpha=0.4)
-	# plt.plot(center[:,0], center[:,1], 'go', linewidth=2, markersize=4)
+	plt.plot(center_lane[:,0], center_lane[:,1], '-', linewidth=4, markersize=12, color='gray')
 	ax = plt.gca()
 	ax.set_facecolor('black')
 	# ax.set_facecolor((1.0, 0.47, 0.42))
 	plt.pause(2)
+
+
+def circle2ellipse(center_lane, width, height, dist):
+	k_x = width/dist 
+	k_y = height/dist
+	center_lane_ellipse = np.zeros(center_lane.shape)
+	for i in range(center_lane.shape[0]):
+		points = center_lane[i,:]
+		center_lane_ellipse[i,:] = [points[0]*k_x,points[1]*k_y]
+	return center_lane_ellipse
+
+
+
 
 
 def b_curve_fitting(cpoints):
