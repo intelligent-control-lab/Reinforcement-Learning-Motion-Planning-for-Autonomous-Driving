@@ -103,9 +103,8 @@ def add_car_env_args(parser):
     env.add_argument('--road-file', default='track_template.bmp', type=str, help='track file')
     env.add_argument('--car-file', default='car.bmp', type=str, help='car file')
     env.add_argument('--center-lane-file', default='center_lane.bmp', type=str, help='center lane file')
-    env.add_argument('--textures', default=['icy', 'rocky'], nargs='+', type=str, help='types of road textures')
-    env.add_argument('--texture-files', default=['icy.bmp', 'rocky.bmp'], nargs='+', type=str, help='road texture files')
-    env.add_argument('--texture-frictions', default=[0.01, 3], nargs='+', type=int, help='road texture friction levels')
+    env.add_argument('--textures', default=['icy', 'rocky', 'normal'], nargs='+', type=str, help='types of road textures')
+    env.add_argument('--texture-frictions', default=[0.01, 3, 1], nargs='+', type=int, help='road texture friction levels')
 
     return parser
 

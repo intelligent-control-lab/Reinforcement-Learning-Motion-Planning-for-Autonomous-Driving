@@ -1,6 +1,7 @@
 import sys
 import gym
 import os
+import random
 import numpy as np
 import gym_ICLcar
 from envs.env_v2.env_configs import *
@@ -27,6 +28,9 @@ if __name__ == '__main__':
   args.update(experiment_settings)
 
   pprint(args)
+
+  random.seed(args['seed'])
+  np.random.seed(args['seed'])
 
   if args['hide_display']: os.environ["SDL_VIDEODRIVER"] = "dummy"
 
@@ -58,7 +62,6 @@ if __name__ == '__main__':
 
   while True:
       state, reward, done, info = env.step(None, mode=args['env_mode'])
-
       if done: env.reset()
       env.render()
 

@@ -6,6 +6,7 @@ import math
 from .utils import *
 from .env_configs import *
 import scipy.spatial as sp
+from collections import defaultdict as dd
 
 # ==============================================
 # Car Class
@@ -683,33 +684,38 @@ class Sensors:
 # ==============================================
 class Road:
     def __init__(self,
-        center_lane
+        center_lane,
+        textures,
+        texture_frictions,
+        road_sections,
+        road_types
     ):
         self.center_lane = center_lane
+        self.textures = textures
+        self.texture_frictions = texture_frictions
+        self.texture_colors = [(173, 216, 230), (181, 101, 29), (211, 211, 211)]
+        self.texture_metadata = {
+            t: {'friction': fric, 'color': c} for (t, fric, c) in zip(textures, texture_frictions, self.texture_colors)
+        }
+        self.road_sections = road_sections
+        self.road_types = road_types
 
-        # self.textures = ['icy', 'rocky', 'normal']
+    def setup_texture_map(self, screen):
+        self.texture_map = {k: dd(list) for k in self.textures}
 
+        for texture in self.textures:
+            for i, indx in enumerate(self.road_types):
+                if self.textures[indx] == texture:
+                    point = self.road_sections[i][len(self.road_sections[indx])//2]
+                    point = [int(point[0]), int(point[1])]
+                    texture_mask = pygame.mask.from_threshold(screen, self.texture_metadata[texture]['color'], (2,2,2,255))
 
-        # self.road_sections = np.split(self.center_lane, 10) # split into 10 segments
-        # self.road_type = np.random.randint(0, len(self.textures), 10)
-
-        # self.texture_map = {
-        #     'icy': [0.1, (173, 216, 230)],
-        #     'rocky': [3, (181, 101, 29)],
-        #     'normal': [1, (211, 211, 211)]
-        # }
-
-        # for texture in self.textures:
-        #     mask = pygame.mask.from_threshold(self.img, self.img.get_at((0,0)), (2, 2, 2, 255))
-
-        #     self.texture_map[texture] = {
-        #         'friction_level':
-        #     }
-
-
-
+                    self.texture_map[texture]['mask'].append(texture_mask)
 
     def blit(self, screen):
-        # for i, section in enumerate(self.road_sections):
-        #     friction_level, color = self.texture_map[self.textures[self.road_type[i]]]
-        pygame.draw.lines(screen, (211, 211, 211), closed=False, points=self.center_lane, width=100)
+        radius = 80
+        for i, section in enumerate(self.road_sections):
+            info = self.texture_metadata[self.textures[self.road_types[i]]]
+            for point in section[::radius//12]:
+                pygame.draw.circle(screen, info['color'], center=point, radius=radius)
+                # pygame.draw.lines(screen, info['color'], closed=False, points=section, width=150)

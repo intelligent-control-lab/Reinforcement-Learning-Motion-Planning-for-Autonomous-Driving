@@ -47,9 +47,8 @@ act_limit: 50
 track_number: 1
 start_x: [740, 740]
 start_y: [240, 120]
-textures: ['icy', 'rocky']
-texture_files: ['icy.bmp', 'rocky.bmp']
-texture_frictions: [0.01, 3]
+textures: ['icy', 'rocky', 'normal']
+texture_frictions: [0.5, 5, 1.5]
 use_textures: False
 
 # Spinning up settings

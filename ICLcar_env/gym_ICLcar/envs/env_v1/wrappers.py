@@ -167,13 +167,12 @@ class RewardWrapper(EnvWrapperBase):
 
   def step(self, action, mode='rgb_array'):
     obs, _, done, info = self.env.step(action, mode)
-    step_reward, done = self.reward_func(action, info)
+    step_reward = self.reward_func(action, info)
 
     info['reward'] = self.reward
     return obs, step_reward, done, info
 
   def reward_func(self, action, info):
-    done = False
     step_reward = 0
 
     # Car goes out of map
@@ -215,7 +214,7 @@ class RewardWrapper(EnvWrapperBase):
     # print(f"vlon: {velocity_rew/30}, dist: {dist_to_center_penalty}, ang_vel: {angular_vel_penalty}, ang_diff: {diff_angle_penalty}")
 
     self.update_reward(step_reward)
-    return step_reward, done
+    return step_reward
 
 
 class ImageWrapper(EnvWrapperBase):

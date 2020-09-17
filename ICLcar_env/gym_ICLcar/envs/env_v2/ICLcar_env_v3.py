@@ -34,6 +34,10 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
         base.PyGameWrapper.__init__(self, self.width, self.height)
         self.screen = pg.display.set_mode(self.getScreenDims(), 0, 32)
         self.args = args
+        self.center_lane = generate_track()[::-1]
+        self.road_sections = np.split(self.center_lane, 10) # split into 10 segments
+        self.road_types = np.random.randint(0, len(self.args['textures']), 10)
+
         self.define_spaces()
 
     def define_spaces(self):
@@ -89,28 +93,30 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
     def out_of_bound_check(self):
         return not (-300 < self.car.x < SCREEN_WIDTH + 300) or not (-300 < self.car.y < SCREEN_HEIGHT + 300)
 
-    def collision_check(self):
-        pose = self.car.pose[:2]
-        pose = [int(ele) for ele in pose]
-        return self.road.field_mask.overlap(self.car.img_mask, pose)
-
-    def update_friction(self):
+    def check_section_overlay(self):
+        overlap = ''
         pose = [int(self.car.x), int(self.car.ypos)]
+        for texture_name, info in self.road.texture_map.items():
+            masks = info['mask']
 
+            for mask in masks:
+                if mask.overlap(self.car.img_mask, pose):
+                    overlap = texture_name
+                    break
+
+            if overlap: break
+        return overlap
+
+    def update_friction(self, overlap):
         if not self.car.img_mask:
             print('dont update')
             return
 
-        set_friction = False
-
-        # Set rotational and translational coefficients of vehicle
-        for texture, dic in self.road.texture_map.items():
-            if self.road.texture_map[texture]['mask'].overlap(self.car.img_mask, pose):
-                self.car.set_friction(dic['friction_level'], 1)
-                set_friction = True
-                break
-
-        if not set_friction: self.car.set_friction(1, 1)
+        metadata = self.road.texture_metadata
+        if overlap != '':
+            self.car.set_friction(metadata[overlap]['friction'], 10)
+        else:
+            self.car.set_friction(1, 10)
 
     def world2screen(self, world_x, world_y):
         screen_x = (world_x - self.world_offset_x) * self.zoom
@@ -176,13 +182,16 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
         # ==============================================
         # Update friction and update all of the env objects
         # ==============================================
-        # self.update_friction()
+        overlap = self.check_section_overlay()
+        self.update_friction(overlap)
 
         self.legacy_screen.fill(WHITE)
         self.road.blit(self.legacy_screen)
         self.car.blit(self.legacy_screen, action)
 
         done = False
+        if not overlap: done = True
+
         step_reward = 0
         info = {}
         import collections
@@ -210,11 +219,17 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
         def abs_path(path):
             return os.path.join(self.args['base_dir'], f'assets/track_{track_num}', path)
 
-        center_lane = generate_track()[::-1]
-        self.car = Car(0, center_lane[0][0], center_lane[0][1], car_file=abs_path(self.args['car_file']), fps=self.args['fps'])
+        self.car = Car(0, self.center_lane[0][0], self.center_lane[0][1], car_file=abs_path(self.args['car_file']), fps=self.args['fps'])
 
-        self.road = Road(center_lane)
+        self.road = Road(
+            self.center_lane,
+            textures=self.args['textures'],
+            texture_frictions=self.args['texture_frictions'],
+            road_sections=self.road_sections,
+            road_types=self.road_types
+        )
         self.road.blit(self.legacy_screen)
+        self.road.setup_texture_map(self.legacy_screen)
         self.car.blit(self.legacy_screen, [0, 0])
         return self.obs
 
