@@ -1,12 +1,12 @@
 # the testing files for random track generalization
 import numpy as np
-from math import pi
+from math import pi, acos
 from ipdb import set_trace
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 class cpoint():
-  def __init__(self, theta, dist, max_distance=500, min_distance=250):
+  def __init__(self, theta, dist, max_distance=300, min_distance=250):
     self.theta = theta
     self.dist = dist
     self.rcp = None # right control point
@@ -26,7 +26,8 @@ class cpoint():
     input: the control points sequence
     '''
     length = np.random.rand((1)) * (self.max_distance - self.min_distance) + self.min_distance # the maximum distance of auxiliary cpoints
-    theta = np.random.rand((1)) * 2 * pi
+    # theta = np.random.rand((1)) * 2 * pi
+    theta = self.theta + pi/2
 
     pos1 = np.append(np.array([self.x + length*np.cos(theta), self.y + length*np.sin(theta)]),0)
     pos2 = np.append(np.array([self.x - length*np.cos(theta), self.y - length*np.sin(theta)]),0)
@@ -62,6 +63,9 @@ def generate_track():
 
   # create the corresonding control point
   info = np.hstack((radius, dist))
+
+
+  # while restart == True:
   cpoints = []
   xlist = []
   ylist = []
@@ -74,17 +78,38 @@ def generate_track():
     ylist.append(cp.y)
     cpoints.append(cp)
   center_lane, comp, center = b_curve_fitting(cpoints)
+
+  # compute the curve for each turning point 
+  # restart = False
+  # for i in range(len(cpoints)):
+  #   P0 = np.array([cpoints[i].x, cpoints[i].y])
+  #   P1 = cpoints[i].lcp
+  #   P2 = cpoints[(i+1)%len(cpoints)].rcp
+  #   P3 = np.array([cpoints[(i+1)%len(cpoints)].x, cpoints[(i+1)%len(cpoints)].y])
+  #   v10 = P0 - p1
+  #   v12 = P2 - P1
+  #   v21 = P1 - P2
+  #   v23 = P3 - P2
+  #   angle1 = acos(np.dot(V12,V10) / (np.linalg.norm(V12)*np.linalg.norm(V10)))
+  #   angle2 = acos(np.dot(v21,v23) / (np.linalg.norm(v21)*np.linalg.norm(v23)))
+  #   if angle1 < pi/6 or angle2 < pi/6:
+  #     restart = True
+  #     break
+
+
+
+
   center_lane = circle2ellipse(center_lane, width, height, dist_max)
   center_lane[:, 0] += 600
   center_lane[:, 1] += 400
   # visuliazation for the points
-  # plt.clf()
-  # # axes.plot(center_lane[:,0], center_lane[:,1], '-', linewidth=2, markersize=12)
-  # plt.plot(center_lane[:,0], center_lane[:,1], '-', linewidth=4, markersize=12, color='gray')
-  # ax = plt.gca()
-  # ax.set_facecolor('black')
-  # # ax.set_facecolor((1.0, 0.47, 0.42))
-  # plt.pause(2)
+  plt.clf()
+  # axes.plot(center_lane[:,0], center_lane[:,1], '-', linewidth=2, markersize=12)
+  plt.plot(center_lane[:,0], center_lane[:,1], '-', linewidth=4, markersize=12, color='gray')
+  ax = plt.gca()
+  ax.set_facecolor('black')
+  # ax.set_facecolor((1.0, 0.47, 0.42))
+  plt.pause(2)
   return center_lane
 
 
@@ -141,4 +166,7 @@ def b_curve_fitting(cpoints):
 
 
 if __name__ == "__main__":
-  auto_track()
+  generate_track()
+
+
+

@@ -713,9 +713,160 @@ class Road:
                     self.texture_map[texture]['mask'].append(texture_mask)
 
     def blit(self, screen):
-        radius = 80
+        radius = 40
+        width = 600
+        height = 400
         for i, section in enumerate(self.road_sections):
             info = self.texture_metadata[self.textures[self.road_types[i]]]
-            for point in section[::radius//12]:
-                pygame.draw.circle(screen, info['color'], center=point, radius=radius)
-                # pygame.draw.lines(screen, info['color'], closed=False, points=section, width=150)
+            # import ipdb; ipdb.set_trace()
+            # trace the point to construct different polygon to represent the track 
+            # for pointidx in np.arange(section.shape[0])[:-radius//3][::radius//3]:
+            
+            # ====================
+            # newest version 
+            # ====================
+            for pointidx in np.arange(section.shape[0])[:-1]:
+                tmp_idx = pointidx
+                next_idx = pointidx + 1
+                assert(next_idx < section.shape[0])
+                point = section[tmp_idx,:]
+                next_point = section[next_idx,:]
+                # compute the polygon 
+                xcoord0, ycoord0 = point[0], point[1]
+                xcoord1, ycoord1 = next_point[0], next_point[1]
+
+                vector = np.array([xcoord1 - xcoord0, ycoord1 - ycoord0])
+                theta = np.arctan2(vector[1], vector[0])
+                normal = theta + np.pi/2
+                from numpy import cos,sin
+                cp1 = np.array([xcoord0 + radius*cos(normal), ycoord0 + radius*sin(normal)])
+                cp2 = np.array([xcoord0 - radius*cos(normal), ycoord0 - radius*sin(normal)])
+                cp3 = np.array([xcoord1 + radius*cos(normal), ycoord1 + radius*sin(normal)])
+                cp4 = np.array([xcoord1 - radius*cos(normal), ycoord1 - radius*sin(normal)])
+
+                # first fill the crack between the end of last and begin of current 
+                if pointidx >= 1 or i >=1:
+                    precp1 = lastending["cp1"]
+                    precp2 = lastending["cp2"]
+                    pygame.draw.polygon(screen, info['color'], ((precp1[0],precp1[1]),(precp2[0],precp2[1]),(cp2[0],cp2[1]),(cp1[0],cp1[1]))) 
+
+                # preserve the previous thing 
+                lastending = {"cp1": cp3, "cp2": cp4}
+                # draw the polygon 
+                pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
+
+
+
+            # suplement the remaining segment if necessary
+            # if next_idx != section.shape[0] - 1:
+            #     tmp_idx = next_idx
+            #     next_idx = section.shape[0]-1
+            #     assert(tmp_idx < section.shape[0] and next_idx == section.shape[0]-1)
+            #     point = section[tmp_idx,:]
+            #     next_point = section[next_idx,:]
+            #     # compute the polygon 
+            #     # compute in the polar coordinate 
+            #     # current point 
+            #     xcoord0, ycoord0 = point[0] - width, point[1] - height
+            #     dis2origin = np.linalg.norm([xcoord0, ycoord0])
+            #     theta = np.arctan2(ycoord0, xcoord0)
+            #     # two control point wrt. first point 
+            #     dist1 = dis2origin - radius/2
+            #     dist2 = dis2origin + radius/2
+            #     cp1 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
+            #     cp2 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
+
+            #     # next point 
+            #     xcoord1, ycoord1 = next_point[0] - width, next_point[1] - height
+            #     dis2origin = np.linalg.norm([xcoord1, ycoord1])
+            #     theta = np.arctan2(ycoord1, xcoord1)
+            #     # two control point wrt. first point 
+            #     dist1 = dis2origin - radius/2
+            #     dist2 = dis2origin + radius/2
+            #     cp3 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
+            #     cp4 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
+
+            #     # draw the polygon 
+            #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
+
+
+
+            # ====================
+            # old version  
+            # ====================
+
+            # for pointidx in np.arange(section.shape[0])[:-1]:
+            #     tmp_idx = pointidx
+            #     next_idx = pointidx + 1
+            #     assert(next_idx < section.shape[0])
+            #     point = section[tmp_idx,:]
+            #     next_point = section[next_idx,:]
+            #     # compute the polygon 
+            #     # compute in the polar coordinate 
+            #     # current point 
+            #     xcoord0, ycoord0 = point[0] - width, point[1] - height
+            #     dis2origin = np.linalg.norm([xcoord0, ycoord0])
+            #     theta = np.arctan2(ycoord0, xcoord0)
+            #     # two control point wrt. first point 
+            #     dist1 = dis2origin - radius/2
+            #     dist2 = dis2origin + radius/2
+            #     cp1 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
+            #     cp2 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
+
+            #     # next point 
+            #     xcoord1, ycoord1 = next_point[0] - width, next_point[1] - height
+            #     dis2origin = np.linalg.norm([xcoord1, ycoord1])
+            #     theta = np.arctan2(ycoord1, xcoord1)
+            #     # two control point wrt. first point 
+            #     dist1 = dis2origin - radius/2
+            #     dist2 = dis2origin + radius/2
+            #     cp3 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
+            #     cp4 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
+
+            #     # draw the polygon 
+            #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
+
+            # # suplement the remaining segment if necessary
+            # if next_idx != section.shape[0] - 1:
+            #     tmp_idx = next_idx
+            #     next_idx = section.shape[0]-1
+            #     assert(tmp_idx < section.shape[0] and next_idx == section.shape[0]-1)
+            #     point = section[tmp_idx,:]
+            #     next_point = section[next_idx,:]
+            #     # compute the polygon 
+            #     # compute in the polar coordinate 
+            #     # current point 
+            #     xcoord0, ycoord0 = point[0] - width, point[1] - height
+            #     dis2origin = np.linalg.norm([xcoord0, ycoord0])
+            #     theta = np.arctan2(ycoord0, xcoord0)
+            #     # two control point wrt. first point 
+            #     dist1 = dis2origin - radius/2
+            #     dist2 = dis2origin + radius/2
+            #     cp1 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
+            #     cp2 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
+
+            #     # next point 
+            #     xcoord1, ycoord1 = next_point[0] - width, next_point[1] - height
+            #     dis2origin = np.linalg.norm([xcoord1, ycoord1])
+            #     theta = np.arctan2(ycoord1, xcoord1)
+            #     # two control point wrt. first point 
+            #     dist1 = dis2origin - radius/2
+            #     dist2 = dis2origin + radius/2
+            #     cp3 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
+            #     cp4 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
+
+            #     # draw the polygon 
+            #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
+
+
+            # ====================
+            # test 
+            # ====================
+            # for point in section[::radius//3]:
+            #     # pygame.draw.circle(screen, info['color'], center=point, radius=radius)
+            #     x,y = point[0], point[1]
+            #     # rec = pygame.Rect(x, y, 20, 20)
+            #     # pygame.draw.rect(screen, info['color'],rec)
+            #     pygame.draw.polygon(screen, info['color'], ((x+20,y+20),(x-20,y-20),(x+20,y-20),(x-20,y+20)))
+            #     # ( (10,20),(90,20),(50,80) )
+            #     # pygame.draw.lines(screen, info['color'], closed=False, points=section, width=150)

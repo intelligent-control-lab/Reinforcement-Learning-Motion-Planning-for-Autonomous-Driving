@@ -1,7 +1,7 @@
 # Experiment settings
 mode: 'train'
 environment_id: 'ICLcar-v2'
-seed: 1
+seed: 3
 num_envs: 1
 log_frequency: 5
 fps: 60

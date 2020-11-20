@@ -6,6 +6,7 @@ import numpy as np
 import gym_ICLcar
 from envs.env_v2.env_configs import *
 from envs.env_v2.wrappers import make_wrapped_env
+import ipdb
 
 if __name__ == '__main__':
   from src.configs import add_experiment_args, add_training_args, add_rl_agent_args, add_car_env_args, add_spinning_up_args, add_logging_args
@@ -64,5 +65,6 @@ if __name__ == '__main__':
       state, reward, done, info = env.step(None, mode=args['env_mode'])
       if done: env.reset()
       env.render()
+      # import ipdb; ipdb.set_trace()
 
   print('Successfully run gym environment.')
