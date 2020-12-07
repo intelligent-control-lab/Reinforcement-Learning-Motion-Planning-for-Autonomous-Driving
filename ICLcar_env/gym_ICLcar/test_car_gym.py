@@ -58,6 +58,7 @@ if __name__ == '__main__':
       )
   )
   env = make_wrapped_env(rank=0, **env_kwargs)
+  import ipdb; ipdb.set_trace()
   env.setup(args)
   env.reset()
 

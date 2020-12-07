@@ -721,7 +721,7 @@ class Road:
             # import ipdb; ipdb.set_trace()
             # trace the point to construct different polygon to represent the track 
             # for pointidx in np.arange(section.shape[0])[:-radius//3][::radius//3]:
-            
+
             # ====================
             # newest version 
             # ====================
@@ -859,14 +859,4 @@ class Road:
             #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
 
 
-            # ====================
-            # test 
-            # ====================
-            # for point in section[::radius//3]:
-            #     # pygame.draw.circle(screen, info['color'], center=point, radius=radius)
-            #     x,y = point[0], point[1]
-            #     # rec = pygame.Rect(x, y, 20, 20)
-            #     # pygame.draw.rect(screen, info['color'],rec)
-            #     pygame.draw.polygon(screen, info['color'], ((x+20,y+20),(x-20,y-20),(x+20,y-20),(x-20,y+20)))
-            #     # ( (10,20),(90,20),(50,80) )
-            #     # pygame.draw.lines(screen, info['color'], closed=False, points=section, width=150)
+           
