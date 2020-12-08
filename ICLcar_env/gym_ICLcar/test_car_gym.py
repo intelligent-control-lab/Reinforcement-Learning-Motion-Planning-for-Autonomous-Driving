@@ -58,12 +58,12 @@ if __name__ == '__main__':
       )
   )
   env = make_wrapped_env(rank=0, **env_kwargs)
-  import ipdb; ipdb.set_trace()
   env.setup(args)
   env.reset()
 
   while True:
       state, reward, done, info = env.step(None, mode=args['env_mode'])
+      # import ipdb; ipdb.set_trace()
       if done: env.reset()
       env.render()
       # import ipdb; ipdb.set_trace()

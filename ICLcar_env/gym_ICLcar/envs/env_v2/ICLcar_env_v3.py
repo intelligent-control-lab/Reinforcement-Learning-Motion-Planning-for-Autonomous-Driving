@@ -35,8 +35,8 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
         self.screen = pg.display.set_mode(self.getScreenDims(), 0, 32)
         self.args = args
         self.center_lane = generate_track()[::-1]
-        self.road_sections = np.split(self.center_lane, 10) # split into 10 segments
-        self.road_types = np.random.randint(0, len(self.args['textures']), 10)
+        self.road_sections = np.split(self.center_lane, 1) # split into 10 segments
+        self.road_types = np.random.randint(0, len(self.args['textures']), 1)
 
         self.define_spaces()
 
@@ -114,9 +114,9 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
 
         metadata = self.road.texture_metadata
         if overlap != '':
-            self.car.set_friction(metadata[overlap]['friction'], 10)
+            self.car.set_friction(metadata[overlap]['friction'], 25)
         else:
-            self.car.set_friction(1, 10)
+            self.car.set_friction(1, 25)
 
     def world2screen(self, world_x, world_y):
         screen_x = (world_x - self.world_offset_x) * self.zoom

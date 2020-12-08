@@ -3,3 +3,5 @@ env_mode: 'human'
 hide_display: False
 use_textures: True
 track_number: 2
+textures: ['normal']
+texture_frictions: [1]

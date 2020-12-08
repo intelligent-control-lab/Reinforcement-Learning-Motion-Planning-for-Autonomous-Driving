@@ -1,7 +1,7 @@
 # Experiment settings
 mode: 'train'
 environment_id: 'ICLcar-v2'
-seed: 3
+seed: 4
 num_envs: 1
 log_frequency: 5
 fps: 60
@@ -38,7 +38,7 @@ hidden_sizes: [400, 300]
 
 # Car environment settings
 state_sources: ['lane_direction', 'center_lane']
-num_future_info: 0
+num_future_info: 10
 crop_size: 200
 channels: 1
 env_mode: 'rgb_array'
