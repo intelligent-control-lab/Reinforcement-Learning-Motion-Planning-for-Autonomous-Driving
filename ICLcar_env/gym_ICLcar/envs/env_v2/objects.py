@@ -708,6 +708,7 @@ class Road:
                 if self.textures[indx] == texture:
                     point = self.road_sections[i][len(self.road_sections[indx])//2]
                     point = [int(point[0]), int(point[1])]
+                    # import ipdb; ipdb.set_trace()
                     texture_mask = pygame.mask.from_threshold(screen, self.texture_metadata[texture]['color'], (2,2,2,255))
 
                     self.texture_map[texture]['mask'].append(texture_mask)
@@ -754,109 +755,5 @@ class Road:
                 lastending = {"cp1": cp3, "cp2": cp4}
                 # draw the polygon 
                 pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
-
-
-
-            # suplement the remaining segment if necessary
-            # if next_idx != section.shape[0] - 1:
-            #     tmp_idx = next_idx
-            #     next_idx = section.shape[0]-1
-            #     assert(tmp_idx < section.shape[0] and next_idx == section.shape[0]-1)
-            #     point = section[tmp_idx,:]
-            #     next_point = section[next_idx,:]
-            #     # compute the polygon 
-            #     # compute in the polar coordinate 
-            #     # current point 
-            #     xcoord0, ycoord0 = point[0] - width, point[1] - height
-            #     dis2origin = np.linalg.norm([xcoord0, ycoord0])
-            #     theta = np.arctan2(ycoord0, xcoord0)
-            #     # two control point wrt. first point 
-            #     dist1 = dis2origin - radius/2
-            #     dist2 = dis2origin + radius/2
-            #     cp1 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
-            #     cp2 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
-
-            #     # next point 
-            #     xcoord1, ycoord1 = next_point[0] - width, next_point[1] - height
-            #     dis2origin = np.linalg.norm([xcoord1, ycoord1])
-            #     theta = np.arctan2(ycoord1, xcoord1)
-            #     # two control point wrt. first point 
-            #     dist1 = dis2origin - radius/2
-            #     dist2 = dis2origin + radius/2
-            #     cp3 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
-            #     cp4 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
-
-            #     # draw the polygon 
-            #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
-
-
-
-            # ====================
-            # old version  
-            # ====================
-
-            # for pointidx in np.arange(section.shape[0])[:-1]:
-            #     tmp_idx = pointidx
-            #     next_idx = pointidx + 1
-            #     assert(next_idx < section.shape[0])
-            #     point = section[tmp_idx,:]
-            #     next_point = section[next_idx,:]
-            #     # compute the polygon 
-            #     # compute in the polar coordinate 
-            #     # current point 
-            #     xcoord0, ycoord0 = point[0] - width, point[1] - height
-            #     dis2origin = np.linalg.norm([xcoord0, ycoord0])
-            #     theta = np.arctan2(ycoord0, xcoord0)
-            #     # two control point wrt. first point 
-            #     dist1 = dis2origin - radius/2
-            #     dist2 = dis2origin + radius/2
-            #     cp1 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
-            #     cp2 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
-
-            #     # next point 
-            #     xcoord1, ycoord1 = next_point[0] - width, next_point[1] - height
-            #     dis2origin = np.linalg.norm([xcoord1, ycoord1])
-            #     theta = np.arctan2(ycoord1, xcoord1)
-            #     # two control point wrt. first point 
-            #     dist1 = dis2origin - radius/2
-            #     dist2 = dis2origin + radius/2
-            #     cp3 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
-            #     cp4 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
-
-            #     # draw the polygon 
-            #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
-
-            # # suplement the remaining segment if necessary
-            # if next_idx != section.shape[0] - 1:
-            #     tmp_idx = next_idx
-            #     next_idx = section.shape[0]-1
-            #     assert(tmp_idx < section.shape[0] and next_idx == section.shape[0]-1)
-            #     point = section[tmp_idx,:]
-            #     next_point = section[next_idx,:]
-            #     # compute the polygon 
-            #     # compute in the polar coordinate 
-            #     # current point 
-            #     xcoord0, ycoord0 = point[0] - width, point[1] - height
-            #     dis2origin = np.linalg.norm([xcoord0, ycoord0])
-            #     theta = np.arctan2(ycoord0, xcoord0)
-            #     # two control point wrt. first point 
-            #     dist1 = dis2origin - radius/2
-            #     dist2 = dis2origin + radius/2
-            #     cp1 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
-            #     cp2 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
-
-            #     # next point 
-            #     xcoord1, ycoord1 = next_point[0] - width, next_point[1] - height
-            #     dis2origin = np.linalg.norm([xcoord1, ycoord1])
-            #     theta = np.arctan2(ycoord1, xcoord1)
-            #     # two control point wrt. first point 
-            #     dist1 = dis2origin - radius/2
-            #     dist2 = dis2origin + radius/2
-            #     cp3 = np.array([dist1*np.cos(theta)+width, dist1*np.sin(theta)+height])
-            #     cp4 = np.array([dist2*np.cos(theta)+width, dist2*np.sin(theta)+height])
-
-            #     # draw the polygon 
-            #     pygame.draw.polygon(screen, info['color'], ((cp1[0],cp1[1]),(cp2[0],cp2[1]),(cp4[0],cp4[1]),(cp3[0],cp3[1])))
-
 
            

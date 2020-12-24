@@ -98,7 +98,6 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
         pose = [int(self.car.x), int(self.car.ypos)]
         for texture_name, info in self.road.texture_map.items():
             masks = info['mask']
-
             for mask in masks:
                 if mask.overlap(self.car.img_mask, pose):
                     overlap = texture_name
