@@ -38,6 +38,7 @@ if __name__ == '__main__':
   # ==================================
   # Environment
   # ==================================
+  # import ipdb; ipdb.set_trace()
   env_kwargs = dict(
       env_id=args['environment_id'],
       env_mode=args['env_mode'],

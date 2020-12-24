@@ -25,6 +25,7 @@ def make_wrapped_env(
   video_kwargs=dict()
 ):
   env = gym.make(env_id)
+  # ipdb.set_trace()
 
   if len(set(state_sources) - set("image")) > 0:
     env = SensorWrapper(env, state_sources, num_future_info)

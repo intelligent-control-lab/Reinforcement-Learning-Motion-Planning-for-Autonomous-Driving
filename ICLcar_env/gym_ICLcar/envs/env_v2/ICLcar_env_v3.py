@@ -35,8 +35,8 @@ class ICLcarEnv_v3(gym.Env, base.PyGameWrapper):
         self.screen = pg.display.set_mode(self.getScreenDims(), 0, 32)
         self.args = args
         self.center_lane = generate_track()[::-1]
-        self.road_sections = np.split(self.center_lane, 1) # split into 10 segments
-        self.road_types = np.random.randint(0, len(self.args['textures']), 1)
+        self.road_sections = np.split(self.center_lane, 10) # split into 10 segments
+        self.road_types = np.random.randint(0, len(self.args['textures']), 10)
 
         self.define_spaces()
 
