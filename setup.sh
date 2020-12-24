@@ -39,11 +39,13 @@ git clone https://github.com/ntasfi/PyGame-Learning-Environment.git
 cd PyGame-Learning-Environment/
 pip3 install -e .
 
+
 echo "Installing requirements.txt"
+cd ..
 pip3 install -r requirements.txt
 
 echo "Installing gym environment"
-pip3 install -e gym-ICLcar
+pip3 install -e ICLcar_env
 
 echo
 echo
