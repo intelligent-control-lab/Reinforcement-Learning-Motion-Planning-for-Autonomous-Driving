@@ -21,7 +21,7 @@ dependencies:
   - tensorwatch==0.8.5
   - Pillow==6.2.2
   - cloudpickle==0.5.2
-  - gym[atari]==0.10.5
+  - gym[atari]==0.17.3
   - gitpython==2.1.7
   - gtimer==1.0.0b5
   - pygame

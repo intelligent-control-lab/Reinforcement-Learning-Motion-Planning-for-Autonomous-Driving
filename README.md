@@ -13,7 +13,7 @@ The rollout simulator is build on top of [pygame](https://github.com/pygame/). C
 ## Setup instructions
 
 Clone repo:
-`git clone --recursive https://github.com/aliang8/icl-safe-driving.git`
+`git clone --recursive https://github.com/intelligent-control-lab/Reinforcement-Learning-Motion-Planning-for-Autonomous-Driving.git`
 
 `git submodule update --init --recursive`
 
@@ -26,26 +26,25 @@ Clone repo:
 1. Create virtualenv for development
     - `./setup [virtualenv name] [cpu/gpu]`
 
-2. Running the simulator in manual mode:
-    - `python3 ICLcar_env/gym_ICLcar/test_car_gym.py -es exp_settings/default_settings.yaml exp_settings/human_settings.yaml`
-
-3. Install the gym environment:
+2. Install the gym environment:
     - `pip install -e ICLcar_env`
 
-4. Test the gym env:
-    - `python3 ICLcar_env/gym_ICLcar/test_car_gym.py`
+3. Running the simulator in manual mode:
+    - `python3 ICLcar_env/gym_ICLcar/test_car_gym.py -es exp_settings/default_settings.yaml exp_settings/human_settings.yaml`
 
-5. Try training a DDPG agent.
-    - `python3 -m ipdb -c continue src/train.py -es exp_settings/default_settings.yaml exp_settings/exp_settings.yaml`
-
-6. Train DDPG agent with SpinningUp implementation.
+4. Train SAC agent with SpinningUp implementation.
     - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/exp_settings.yaml`
 
-7. Evaluate on trained checkpoint.
+    - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/exp_settings.yaml -eg exp_settings/exp_grid.yaml`
+
+5. Evaluate on trained checkpoint.
     - `python3 -m ipdb -c continue src/external/spinup_main.py -es exp_settings/default_settings.yaml exp_settings/test_settings.yaml`
 
-8. View logs on tensorboard (make sure you first ssh with port forwarding)
+6. View logs on tensorboard (make sure you first ssh with port forwarding)
     - `tensorboard --logdir={log_dir} --port {server_port} --host localhost`
+
+### Running Note 
+1. if ModuleNotFoundError during execution, try `export PYTHONPATH=$PYTHONPATH:.`
 
 ### Testing Rllab and Spinup implementations of DDPG
 

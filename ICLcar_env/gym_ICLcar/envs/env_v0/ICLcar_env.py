@@ -74,7 +74,7 @@ class ICLcarEnv(gym.Env, base.PyGameWrapper):
 
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT]:
-            action = [10, LATERAL_FORCE]
+            action = [0, LATERAL_FORCE]
         if keys[pg.K_RIGHT]:
             action = [LATERAL_FORCE, 0]
         if keys[pg.K_UP]:
@@ -93,24 +93,22 @@ class ICLcarEnv(gym.Env, base.PyGameWrapper):
         return self.road.field_mask.overlap(self.car.img_mask, pose)
 
     def update_friction(self):
-        pose = self.car.pose[:2]
-        pose = [int(ele) for ele in pose]
+        pose = [int(self.car.x), int(self.car.ypos)]
 
         if not self.car.img_mask:
             print('dont update')
             return
 
+        set_friction = False
+
         # Set rotational and translational coefficients of vehicle
         for texture, dic in self.road.texture_map.items():
-            '''
-            set the constant friction level
-            '''
-            # if self.road.texture_map[texture]['mask'].overlap(self.car.img_mask, pose):
-            #     self.car.set_friction(dic['friction_level'], 1)
-            #     break
-            # else:
-            #     self.car.set_friction(1, 1)
-            self.car.set_friction(1,1)
+            if self.road.texture_map[texture]['mask'].overlap(self.car.img_mask, pose):
+                self.car.set_friction(dic['friction_level'], 1)
+                set_friction = True
+                break
+
+        if not set_friction: self.car.set_friction(1, 1)
 
     def world2screen(self, world_x, world_y):
         screen_x = (world_x - self.world_offset_x) * self.zoom
@@ -205,8 +203,20 @@ class ICLcarEnv(gym.Env, base.PyGameWrapper):
     def reset(self):
         self.reward = 0
         self.prev_reward = 0
-        self.car = Car(0, START_X, START_Y, self.args['fps'])
-        self.road = Road(self.args['use_textures'])
+        track_num = self.args['track_number']
+
+        def abs_path(path):
+            return os.path.join(self.args['base_dir'], f'assets/track_{track_num}', path)
+
+        self.car = Car(0, self.args['start_x'][track_num-1], self.args['start_y'][track_num-1], car_file=abs_path(self.args['car_file']), fps=self.args['fps'])
+        self.road = Road(
+            road_file=abs_path(self.args['road_file']),
+            center_lane_file=abs_path(self.args['center_lane_file']),
+            textures=self.args['textures'],
+            texture_files=[abs_path(f) for f in self.args['texture_files']],
+            texture_frictions=self.args['texture_frictions'],
+            use_textures=self.args['use_textures']
+        )
         self.road.blit(self.legacy_screen)
         self.car.blit(self.legacy_screen, [0, 0])
         return self.obs

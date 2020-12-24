@@ -10,7 +10,6 @@ from gym import spaces
 import numpy as np
 import pygame as pg
 from .objects import Sensors, Info
-from .env_configs import *
 from src.utils import *
 import ipdb
 
@@ -103,7 +102,7 @@ class SensorWrapper(EnvWrapperBase):
       obs['dist_to_center_lane'] = self.sensors.center_lane_sensor.measurement[0]
       obs['closest_center_lane_pose'] = self.sensors.center_lane_sensor.measurement[1:3]
       if self.num_future_info > 0:
-        obs['future_center_pos_car_coord'] = self.sensors.center_lane_sensor.measurement[3:]
+        obs['future_center_pos_car_coord'] = self.sensors.center_lane_sensor.measurement[1:]
 
     if 'lane_curvature' in self.state_sources:
       obs['lane_curvature'] = self.sensors.lane_curvature_sensor.measurement
@@ -124,7 +123,6 @@ class SensorWrapper(EnvWrapperBase):
 
   def step(self, action, mode='rgb_array'):
     obs, reward, done, info = self.env.step(action, mode)
-    self.sensors.blit(self.env.screen)
     self.add_sensor_to_obs(obs)
 
     for sensor in self.sensors.sensors:
@@ -148,15 +146,13 @@ class InfoWrapper(EnvWrapperBase):
 
   def reset(self):
     obs = self.env.reset()
-    font_size = int(self.env.screen.get_size()[1] / 30)
-    self.info = Info(font_size=font_size)
+    self.info = Info()
     self.info.set_sensors(self.env.sensors)
 
     return obs
 
   def step(self, action, mode='rgb_array'):
     obs, reward, done, info = self.env.step(action, mode)
-    self.info.blit(self.env.screen, info)
     return obs, reward, done, info
 
 
@@ -171,13 +167,12 @@ class RewardWrapper(EnvWrapperBase):
 
   def step(self, action, mode='rgb_array'):
     obs, _, done, info = self.env.step(action, mode)
-    step_reward, done = self.reward_func(action, info)
+    step_reward = self.reward_func(action, info)
 
     info['reward'] = self.reward
     return obs, step_reward, done, info
 
   def reward_func(self, action, info):
-    done = False
     step_reward = 0
 
     # Car goes out of map
@@ -187,47 +182,39 @@ class RewardWrapper(EnvWrapperBase):
     # else:
     angle_diff = info['angle_diff']
     dist_to_center = info['closest_dist']
+
     velocity = self.car.v
     angular_vel = self.car.w
 
-    # range for velocity rew: -1 -> 1
-    velocity_rew = self.car.v * math.cos(angle_diff) # enforces that the car should go in the correct direction
-    if velocity_rew < -40:
-      velocity_rew = -40 # lower bound the reward of opposite direction driving
-
-    # range for penalty: 0 -> 0.5
-    diff_angle_penalty = 0
-    if abs(angle_diff) < 0.3:
-      diff_angle_penalty = -0.5
-    if abs(angle_diff) > 0.3:
-      diff_angle_penalty = np.exp(self.reward_func_kwargs['angle_penalty_weight']*abs(angle_diff)) - 1
-
-    # Penality for not following the heading angle
-
+    # enforces that the car should go in the correct direction
+    min_velocity_rew = -40
+    velocity_rew = self.reward_func_kwargs['velocity_reward_weight'] * self.car.v * math.cos(angle_diff)
+    velocity_rew = max(min_velocity_rew, velocity_rew)
+    step_reward += velocity_rew
 
     # Penalty for being far way from center of lane
-    # max: inf, min: 0
-    dist_to_center_penalty = 0
-    if abs(dist_to_center) > 30:
-      dist_to_center_penalty = np.exp(self.reward_func_kwargs['distance_penalty_weight']*abs(dist_to_center)) - 1
-    if dist_to_center_penalty > 4: dist_to_center_penalty = 4
+    max_dist_to_center_penalty = 4
+    dist_to_center_threshold = 30
+    if abs(dist_to_center) > dist_to_center_threshold:
+      dist_to_center_penalty = (self.reward_func_kwargs['distance_penalty_weight']*(abs(dist_to_center) - dist_to_center_threshold))**2
+      dist_to_center_penalty = min(dist_to_center_penalty, max_dist_to_center_penalty)
+      step_reward -= dist_to_center_penalty
 
     # Penalty for high angular velocity
-    # max: 50, min: 0
-    angular_vel_penalty = 0
-    if abs(angular_vel) > 3:
-      angular_vel_penalty = np.exp(self.reward_func_kwargs['rotation_penalty_weight']*abs(angular_vel)) - 1
-    if angular_vel_penalty > 2: angular_vel_penalty = 2
+    max_angular_vel_penalty = 2
+    angular_vel_threshold = 3
+    if abs(angular_vel) > angular_vel_threshold:
+      angular_vel_penalty = (self.reward_func_kwargs['rotation_penalty_weight']*(abs(angular_vel) - angular_vel_threshold))**2
+      angular_vel_penalty = min(angular_vel_penalty, max_angular_vel_penalty)
+      step_reward -= angular_vel_penalty
 
-    # Penalty for not moving
-    stationary_penalty = 2
-
-    step_reward = velocity_rew/10 - angular_vel_penalty - dist_to_center_penalty - stationary_penalty - diff_angle_penalty
+    stationary_penalty = 0.01
+    step_reward -= self.reward_func_kwargs['stationary_penalty_weight']*stationary_penalty
 
     # print(f"vlon: {velocity_rew/30}, dist: {dist_to_center_penalty}, ang_vel: {angular_vel_penalty}, ang_diff: {diff_angle_penalty}")
 
     self.update_reward(step_reward)
-    return step_reward, done
+    return step_reward
 
 
 class ImageWrapper(EnvWrapperBase):
